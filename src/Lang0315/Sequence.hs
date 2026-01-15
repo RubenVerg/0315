@@ -319,12 +319,12 @@ a014963 = Sequence $ ofPositive $ \n -> case factorise n of
   _ -> 1
 a023443 = Sequence $ enumFrom $ negate 1
 a000326 = Sequence $ ofIndices $ \n -> n * (3 * n - 1) `div` 2
-a000166 = Sequence $ let subfact = 1 : 0 : zipWith (*) [1..] (zipWith (+) subfact $ drop 1 subfact) in subfact
+a000166 = Sequence subfact where subfact = 1 : 0 : zipWith (*) [1..] (zipWith (+) subfact $ drop 1 subfact)
 a000330 = Sequence $ ofIndices $ \n -> n * (n + 1) * (2 * n + 1) `div` 6
 a002620 = Sequence $ ofIndices $ \n -> n * n `div` 4
 a001511 = Sequence $ ofPositive $ \n -> adicValuation 2 $ n * 2
 a004526 = Sequence $ ofIndices $ \n -> n `div` 2
-a000085 = Sequence $ let involutions = 1 : 1 : zipWith (+) (zipWith (*) [1..] involutions) (drop 1 involutions) in involutions
+a000085 = Sequence involutions where involutions = 1 : 1 : zipWith (+) (zipWith (*) [1..] involutions) (drop 1 involutions)
 a001227 = Sequence $ ofPositive $ \n -> AF.tau n `div` (adicValuation 2 n + 1)
 a001906 = Sequence evenFibonacci where evenFibonacci = 0 : 1 : zipWith subtract evenFibonacci (map (* 3) $ drop 1 evenFibonacci)
 a000124 = Sequence $ ofIndices $ \n -> n * (n + 1) `div` 2 + 1
@@ -347,8 +347,8 @@ a000204 = Sequence lucas' where lucas' = 1 : 3 : zipWith (+) lucas' (drop 1 luca
 a000069 = Sequence $ filter (odd . popCount) $ enumFrom 0
 a002322 = Sequence $ ofPositive AF.carmichael
 a001969 = Sequence $ filter (even . popCount) $ enumFrom 0
-a000002 = Sequence $ let kolakoski = 1 : 2 : drop 2 (concat $ zipWith genericReplicate kolakoski $ cycle [1, 2]) in kolakoski
+a000002 = Sequence kolakoski where kolakoski = 1 : 2 : drop 2 (concat $ zipWith genericReplicate kolakoski $ cycle [1, 2])
 a003056 = Sequence $ byAntiDiagonals (+) (enumFrom 0) (enumFrom 0)
 a000593 = Sequence $ ofPositive $ \n -> AF.sigma 1 n - if even n then 2 * AF.sigma 1 (n `div` 2) else 0
 a001097 = Sequence $ map unPrime $ filter (\p -> let p' = unPrime p in unPrime (pred p) == p' - 2 || unPrime (succ p) == p' + 2) $ drop 1 primes
-a006882 = Sequence $ let df = 1 : 1 : zipWith (*) [2..] df in df
+a006882 = Sequence df where df = 1 : 1 : zipWith (*) [2..] df
