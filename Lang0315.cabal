@@ -102,7 +102,7 @@ executable 0315-wasmlib
     main-is:          Main.hs
     build-depends:    base
                     , Lang0315
-                    , ghc-experimental ^>=9.1203.0
+                    , ghc-experimental ==9.1202.0 || ==9.1203.0
     hs-source-dirs:   wasm
     default-language: GHC2024
     if os(wasi)
