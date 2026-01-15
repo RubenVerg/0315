@@ -22,13 +22,15 @@ input.addEventListener('keyup', ev => {
 	if (ev.key === 'Enter' && ev.ctrlKey) runB.click();
 });
 
-const seqs = document.querySelector('#sequences');
-for (const sequence of sequences.toSorted((a, b) => a - b)) {
+const seqs = document.querySelector('#sequences ul');
+for (const [sequence, desc] of sequences.toSorted((a, b) => a[0] - b[0])) {
+	const li = document.createElement('li');
 	const a = document.createElement('a');
 	a.href = `https://oeis.org/A${sequence.toString().padStart(6, '0')}`;
 	const code = document.createElement('code');
 	code.textContent = sequence.toString();
 	a.appendChild(code);
-	seqs.appendChild(a);
-	seqs.appendChild(document.createTextNode(' '));
+	li.appendChild(a);
+	li.appendChild(document.createTextNode(': ' + desc));
+	seqs.appendChild(li);
 }

@@ -5,7 +5,6 @@ import Lang0315.Interpreter
 import Lang0315.Sequence
 
 import GHC.Wasm.Prim
-import Control.Monad
 import Data.Functor
 import Data.Coerce
 
@@ -17,6 +16,7 @@ foreign import javascript safe "await $1($2);" jsCallCallback :: JSVal -> JSVal 
 foreign import javascript unsafe "return undefined;" jsUndefined :: JSVal
 foreign import javascript unsafe "return BigInt($1);" jsStringToBigInt :: JSString -> JSVal
 foreign import javascript unsafe "return $1;" jsIntToVal :: Int -> JSVal
+foreign import javascript unsafe "return [$1, $2];" jsMakePair :: JSVal -> JSVal -> JSVal
 
 newtype JSArray = JSArray { unJSArray :: JSVal }
 
@@ -48,4 +48,4 @@ run l cb path' code' = let
       (Right ss, _) -> mapM_ (jsCallCallback cb . jsStringToBigInt . toJSString . show) (take l $ unSequence $ last ss) $> jsUndefined
 
 foreign export javascript "sequences" jsSequences :: JSArray
-jsSequences = listToArray $ map (jsIntToVal . fromIntegral . fst) sequences
+jsSequences = listToArray $ map (\(i, (_, desc)) -> jsMakePair (jsIntToVal $ fromIntegral i) (coerce $ toJSString desc)) sequences
