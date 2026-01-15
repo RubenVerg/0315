@@ -124,6 +124,47 @@ module Lang0315.Sequence
 , a000161
 , a001489
 , a001478
+, a022958
+, a022996
+, a109613
+, a008585
+, a069074
+, a010709
+, a059841
+, a000034
+, a033999
+, a010684
+, a010685
+, a010673
+, a010674
+, a010688
+, a105397
+, a049347
+, a011655
+, a061347
+, a102283
+, a130196
+, a131534
+, a010882
+, a153727
+, a080425
+, a144437
+, a131713
+, a130784
+, a169609
+, a131561
+, a052901
+, a274339
+, a073636
+, a101000
+, a131598
+, a177702
+, a131756
+, a132677
+, a146325
+, a173259
+, a164360
+, a079978
 ) where
 
 import Control.Monad ((>=>))
@@ -280,7 +321,11 @@ a000124, a001405, a000583, a018252, a001157, a001700, a008292, a005101, a001615,
 a000169, a246655, a027641, a027642, a000272, a000004, a000204, a000069, a002322, a001969 :: Sequence
 a000002, a003056, a000593, a001097, a006882, a011557, a000262, a005811, a144944, a001003 :: Sequence
 a000196, a001481, a005100, a001037, a000594, a000688, a000001, a000031, a000058, a008279 :: Sequence
-a001057, a000161, a001489, a001478 :: Sequence
+a001057, a000161, a001489, a001478, a022958, a022996, a109613, a008585, a069074, a010709 :: Sequence
+a059841, a000034, a033999, a010684, a010685, a010673, a010674, a010688, a105397, a049347 :: Sequence
+a011655, a061347, a102283, a130196, a131534, a010882, a153727, a080425, a144437, a131713 :: Sequence
+a130784, a169609, a131561, a052901, a274339, a073636, a101000, a131598, a177702, a131756 :: Sequence
+a132677, a146325, a173259, a164360, a079978 :: Sequence
 a000012 = Sequence $ repeat 1
 a001477 = Sequence $ enumFrom 0
 a000027 = Sequence $ enumFrom 1
@@ -409,3 +454,44 @@ a001057 = Sequence $ 0 : concatMap (\x -> [x, -x]) (enumFrom 1)
 a000161 = Sequence $ ofIndices $ \n -> genericLength $ filter isSquare [n - k * k | k <- [0..intSquareRoot n]]
 a001489 = Sequence $ ofIndices negate
 a001478 = Sequence $ ofPositive negate
+a022958 = Sequence $ ofIndices $ \n -> 2 - n
+a022996 = Sequence $ ofIndices $ \n -> 40 - n
+a109613 = Sequence $ ofIndices $ \n -> 2 * (n `div` 2) + 1
+a008585 = Sequence $ ofIndices $ \n -> 3 * n
+a069074 = Sequence $ ofIndices $ \n -> (2 * n + 2) * (2 * n + 3) * (2 * n + 4)
+a010709 = Sequence $ repeat 4
+a059841 = Sequence $ cycle [1, 0]
+a000034 = Sequence $ cycle [1, 2]
+a033999 = Sequence $ cycle [1, -1]
+a010684 = Sequence $ cycle [1, 3]
+a010685 = Sequence $ cycle [1, 4]
+a010673 = Sequence $ cycle [0, 2]
+a010674 = Sequence $ cycle [0, 3]
+a010688 = Sequence $ cycle [1, 7]
+a105397 = Sequence $ cycle [4, 2]
+a049347 = Sequence $ cycle [1, -1, 0]
+a011655 = Sequence $ cycle [0, 1, 1]
+a061347 = Sequence $ cycle [1, 1, -2]
+a102283 = Sequence $ cycle [0, 1, -1]
+a130196 = Sequence $ cycle [1, 2, 2]
+a131534 = Sequence $ cycle [1, 2, 1]
+a010882 = Sequence $ cycle [1, 2, 3]
+a153727 = Sequence $ cycle [1, 4, 2]
+a080425 = Sequence $ cycle [0, 2, 1]
+a144437 = Sequence $ cycle [3, 3, 1]
+a131713 = Sequence $ cycle [1, -2, 1]
+a130784 = Sequence $ cycle [1, 3, 2]
+a169609 = Sequence $ cycle [1, 3, 3]
+a131561 = Sequence $ cycle [1, 1, -1]
+a052901 = Sequence $ cycle [3, 2, 2]
+a274339 = Sequence $ cycle [15, 24, 18]
+a073636 = Sequence $ cycle [1, 8, 9]
+a101000 = Sequence $ cycle [0, 1, 3]
+a131598 = Sequence $ cycle [2, 5, 8]
+a177702 = Sequence $ cycle [1, 1, 2]
+a131756 = Sequence $ cycle [2, -1, 3]
+a132677 = Sequence $ cycle [1, 2, -3]
+a146325 = Sequence $ cycle [1, 4, 1]
+a173259 = Sequence $ cycle [4, 1, 4]
+a164360 = Sequence $ cycle [5, 4, 3]
+a079978 = Sequence $ cycle [1, 0, 0]
