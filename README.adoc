@@ -59,8 +59,8 @@ There is a sequence for the greatest prime factor (GPF) of a number, https://oei
 
 ----
 lengthBaseTen:55642
-gpf:6530[fromMinusOne]
 fromMinusOne:23443
+gpf:6530[fromMinusOne]
 ----
 
 Now, we want to check that the last `+lengthBaseTen[gpf]+` digits of the numbers one more than each index are equal to the corresponding GPF itself. To do that, we can just raise ten to the power of the lengths, use it as a modulo on the positive integers, and then check for equality with `+gpf+`. However, there is no sequence for the number ten. There is a sequence for the number one, https://oeis.org/A000012[`+12+`], and we have addition.
