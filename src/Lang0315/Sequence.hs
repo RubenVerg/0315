@@ -346,9 +346,9 @@ pattern xs :> x <- (unsnoc -> Just (xs, x))
 eulerTransform :: [Integer] -> [Integer]
 eulerTransform as = 1 : bs where -- Why is 1 : needed?
   cs = map (sum . map (\d -> d * as `genericIndex` (d - 1)) . AF.divisorsList) [1..]
-  bs = zipWith (\cases
-    n (ci :> ct) -> (ct + sum (zipWith (*) bs $ reverse ci)) `div` n
-    _ _ -> error "Unreachable!") [1..] $ drop 1 $ inits cs
+  bs = zipWith f [1..] $ map reverse $ drop 1 $ inits cs
+  f n (cn : ci) = (cn + sum (zipWith (*) bs ci)) `div` n
+  f _ _ = error "Unreachable"
 
 -- See LICENSE.OEIS
 -- https://oeis.org/
