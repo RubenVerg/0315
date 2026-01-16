@@ -1,5 +1,8 @@
+{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
+
 module Lang0315.Sequence
-( Sequence(..)
+( pattern (:>)
+, Sequence(..)
 , seqDivMod
 , seqDiv
 , seqMod
@@ -167,11 +170,22 @@ module Lang0315.Sequence
 , a173259
 , a164360
 , a079978
+, a000009
+, a000726
+, a001935
+, a035959
+, a219601
+, a035985
+, a261775
+, a104502
+, a261776
+, a328545
+, a328546
 ) where
 
 import Control.Monad ((>=>))
 import Data.Bifunctor (bimap)
-import Data.List (genericIndex, genericReplicate, genericLength, sort, sortOn, group)
+import Data.List (genericIndex, genericReplicate, genericLength, sort, sortOn, group, unsnoc, inits)
 import Data.Ord (Down(..))
 import Data.Maybe (isNothing, isJust, catMaybes)
 import Data.Ratio
@@ -316,6 +330,19 @@ digitSequence = showCReal maximumAmountOfDigits >=> (\case
 realPhi :: CReal
 realPhi = (1 + sqrt 5) / 2
 
+{-# COMPLETE [], (:>) #-}
+infixl 5 :>
+pattern (:>) :: [a] -> a -> [a]
+pattern xs :> x <- (unsnoc -> Just (xs, x))
+  where xs :> x = xs ++ [x]
+
+eulerTransform :: [Integer] -> [Integer]
+eulerTransform as = 1 : bs where -- Why is 1 : needed?
+  cs = map (sum . map (\d -> d * as `genericIndex` (d - 1)) . AF.divisorsList) [1..]
+  bs = zipWith (\cases
+    n (ci :> ct) -> (ct + sum (zipWith (*) bs $ reverse ci)) `div` n
+    _ _ -> error "Unreachable!") [1..] $ drop 1 $ inits cs
+
 -- See LICENSE.OEIS
 -- https://oeis.org/
 a000012, a001477, a000027, a000040, a000045, a000203, a000005, a000217, a000010, a000108 :: Sequence
@@ -333,7 +360,8 @@ a001057, a000161, a001489, a001478, a022958, a022996, a109613, a008585, a069074,
 a059841, a000034, a033999, a010684, a010685, a010673, a010674, a010688, a105397, a049347 :: Sequence
 a011655, a061347, a102283, a130196, a131534, a010882, a153727, a080425, a144437, a131713 :: Sequence
 a130784, a169609, a131561, a052901, a274339, a073636, a101000, a131598, a177702, a131756 :: Sequence
-a132677, a146325, a173259, a164360, a079978 :: Sequence
+a132677, a146325, a173259, a164360, a079978, a000009, a000726, a001935, a035959, a219601 :: Sequence
+a035985, a261775, a104502, a261776, a328545, a328546 :: Sequence
 a000012 = Sequence $ repeat 1
 a001477 = Sequence $ enumFrom 0
 a000027 = Sequence $ enumFrom 1
@@ -503,3 +531,14 @@ a146325 = Sequence $ cycle [1, 4, 1]
 a173259 = Sequence $ cycle [4, 1, 4]
 a164360 = Sequence $ cycle [5, 4, 3]
 a079978 = Sequence $ cycle [1, 0, 0]
+a000009 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 2
+a000726 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 3
+a001935 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 4
+a035959 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 5
+a219601 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 6
+a035985 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 7
+a261775 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 8
+a104502 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 9
+a261776 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 10
+a328545 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 11
+a328546 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 12

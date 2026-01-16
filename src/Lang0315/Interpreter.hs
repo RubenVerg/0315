@@ -169,6 +169,17 @@ sequences =
   , (173259, (a173259, "Cycle the numbers 4, 1, 4"))
   , (164360, (a164360, "Cycle the numbers 5, 4, 3"))
   , (079978, (a079978, "Is n a multiple of three?"))
+  , (000009, (a000009, "Number of 2-regular partitions of n"))
+  , (000726, (a000726, "Number of 3-regular partitions of n"))
+  , (001935, (a001935, "Number of 4-regular partitions of n"))
+  , (035959, (a035959, "Number of 5-regular partitions of n"))
+  , (219601, (a219601, "Number of 6-regular partitions of n"))
+  , (035985, (a035985, "Number of 7-regular partitions of n"))
+  , (261775, (a261775, "Number of 8-regular partitions of n"))
+  , (104502, (a104502, "Number of 9-regular partitions of n"))
+  , (261776, (a261776, "Number of 10-regular partitions of n"))
+  , (328545, (a328545, "Number of 11-regular partitions of n"))
+  , (328546, (a328546, "Number of 12-regular partitions of n"))
   ]
 
 type Context = ExceptT String (State [(String, Sequence)])
