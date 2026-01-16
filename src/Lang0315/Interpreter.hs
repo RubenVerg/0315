@@ -43,7 +43,7 @@ sequences =
   , (005408, (a005408, "The odd numbers"))
   , (002275, (a002275, "Repunits: (10^n - 1)/9"))
   , (006530, (a006530, "Greatest prime dividing n"))
-  , (000007, (a000007, "An one and then always zero"))
+  , (000007, (a000007, "A one and then always zero"))
   , (000796, (a000796, "Decimal expansion of pi"))
   , (000961, (a000961, "Powers of primes"))
   , (000984, (a000984, "Central binomial coefficients"))
@@ -180,6 +180,13 @@ sequences =
   , (261776, (a261776, "Number of 10-regular partitions of n"))
   , (328545, (a328545, "Number of 11-regular partitions of n"))
   , (328546, (a328546, "Number of 12-regular partitions of n"))
+  , (001970, (a001970, "Partitions of partitions"))
+  , (034691, (a034691, "Euler transform of powers of two"))
+  , (034899, (a034899, "Euler transform of powers of two without one"))
+  , (166861, (a166861, "Euler transform of the Fibonacci numbers"))
+  , (000335, (a000335, "Euler transform of tetrahedral numbers"))
+  , (005928, (a005928, "Euler transform of cycle -3, -3, -2"))
+  , (073592, (a073592, "Euler transform of negative integers"))
   ]
 
 type Context = ExceptT String (State [(String, Sequence)])

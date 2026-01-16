@@ -181,6 +181,13 @@ module Lang0315.Sequence
 , a261776
 , a328545
 , a328546
+, a001970
+, a034691
+, a034899
+, a166861
+, a000335
+, a005928
+, a073592
 ) where
 
 import Control.Monad ((>=>))
@@ -361,7 +368,8 @@ a059841, a000034, a033999, a010684, a010685, a010673, a010674, a010688, a105397,
 a011655, a061347, a102283, a130196, a131534, a010882, a153727, a080425, a144437, a131713 :: Sequence
 a130784, a169609, a131561, a052901, a274339, a073636, a101000, a131598, a177702, a131756 :: Sequence
 a132677, a146325, a173259, a164360, a079978, a000009, a000726, a001935, a035959, a219601 :: Sequence
-a035985, a261775, a104502, a261776, a328545, a328546 :: Sequence
+a035985, a261775, a104502, a261776, a328545, a328546, a001970, a034691, a034899, a166861 :: Sequence
+a000335, a005928, a073592  :: Sequence
 a000012 = Sequence $ repeat 1
 a001477 = Sequence $ enumFrom 0
 a000027 = Sequence $ enumFrom 1
@@ -372,7 +380,7 @@ a000005 = Sequence $ ofPositive AF.tau
 a000217 = Sequence $ ofIndices $ \n -> n * (n + 1) `div` 2
 a000010 = Sequence $ ofPositive AF.totient
 a000108 = Sequence $ ofIndices $ \n -> binomial (2 * n) n `div` (n + 1)
-a000041 = Sequence $ ofIndices $ infiniteIndex Rec.partition
+a000041 = Sequence $ IL.toList Rec.partition
 a000290 = Sequence $ ofIndices $ \n -> n * n
 a001222 = Sequence $ ofPositive $ fromIntegral . AF.bigOmega
 a000142 = Sequence $ ofIndices $ infiniteIndex Rec.factorial
@@ -542,3 +550,10 @@ a104502 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 9
 a261776 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 10
 a328545 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 11
 a328546 = Sequence $ eulerTransform $ ofPositive $ \n -> signum $ n `mod` 12
+a001970 = Sequence $ eulerTransform $ drop 1 $ IL.toList Rec.partition
+a034691 = Sequence $ eulerTransform $ scanl (*) 1 $ repeat 2
+a034899 = Sequence $ eulerTransform $ scanl (*) 2 $ repeat 2
+a166861 = Sequence $ eulerTransform fibonacci' where fibonacci' = 1 : 1 : zipWith (+) fibonacci' (drop 1 fibonacci')
+a000335 = Sequence $ drop 1 $ eulerTransform $ ofPositive $ \n -> n * (n + 1) * (n + 2) `div` 6
+a005928 = Sequence $ eulerTransform $ cycle [-3, -3, -2]
+a073592 = Sequence $ eulerTransform $ ofPositive negate
