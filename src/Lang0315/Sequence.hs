@@ -10,7 +10,7 @@ module Lang0315.Sequence
 , seqUnSquare
 , seqKeep
 , seqCut
-, seqExtend
+, seqJoin
 , seqCharacter
 , a000012
 , a001477
@@ -244,8 +244,8 @@ seqKeep (Sequence xs) (Sequence cs) = Sequence $ concat $ zipWith genericReplica
 seqCut :: Sequence -> Sequence
 seqCut (Sequence xs) = Sequence $ takeWhile (/= 0) xs
 
-seqExtend :: Sequence -> Sequence
-seqExtend (Sequence xs) = Sequence $ xs ++ repeat 0
+seqJoin :: Sequence -> Sequence -> Sequence
+seqJoin (Sequence xs) (Sequence ys) = Sequence $ xs ++ ys
 
 ofIndices :: (Integer -> a) -> [a]
 ofIndices f = map f $ enumFrom 0

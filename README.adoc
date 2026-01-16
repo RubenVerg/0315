@@ -25,12 +25,12 @@ You can operate on sequences with operators, which have the following precedence
 |left-infix `+%+`|Modulo
 .2+|5|left-infix `+++`|Add
 |left-infix `+-+`|Subtract
-|6|infix `+<+`|Less Than
-|7|infix `+=+`|Equal To
-.2+|8|infix `+,+`|Untriangle
+|6|right-infix `+~+`|Join
+|7|infix `+<+`|Less Than
+|8|infix `+=+`|Equal To
+.2+|9|infix `+,+`|Untriangle
 |infix `+;+`|Unsquare
-.2+|9 (loosest)|prefix `+_+`|Cut
-|prefix `+^+`|Extend
+|10 (loosest)|prefix `+_+`|Cut
 |===
 
 The arithmetic operations apply componentwise, mapping if unary and zipping if binary.
@@ -45,9 +45,9 @@ Untriangle is a way to deal with triangular sequences such as https://oeis.org/A
 
 Similarly, Unsquare deals with square sequences such as https://oeis.org/A003056[`+3056+`], the sequence of the table of a+b, read by antidiagonals. `+i;j+` iterates all pairs of i and j by antidiagonals, and combines the pairs with the unsquaring operation, (i, j) -> (i+j)(i+j+1)/2 + j. `+3056[5843;5843]+` is therefore the table of 2a+2b. Similarly to triangles, you can easily recreate the zipping operation.
 
-Cut takes the longest prefix of a sequence that doesn't contain a zero.
+Join concatenates two sequences tail to tip. It has no effect with an infinite left operand.
 
-Extend adds infinite zeros past the end of a sequence.
+Cut takes the longest prefix of a sequence that doesn't contain a zero.
 
 All infix operations, as well as `+[]+` and `+{}+`, evaluate the right hand side first, and the left hand side second. This is important if you use inline assignments.
 

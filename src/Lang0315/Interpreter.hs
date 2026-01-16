@@ -193,7 +193,7 @@ interpret (ExprIndex l r) = do r' <- interpret r; l' <- interpret l; pure $ l' `
 interpret (ExprKeep l r) = do r' <- interpret r; l' <- interpret l; pure $ l' `seqKeep` r'
 interpret (ExprCharacter r) = do r' <- interpret r; pure $ seqCharacter r'
 interpret (ExprCut r) = do r' <- interpret r; pure $ seqCut r'
-interpret (ExprExtend r) = do r' <- interpret r; pure $ seqExtend r'
+interpret (ExprJoin l r) = do r' <- interpret r; l' <- interpret l; pure $ l' `seqJoin` r'
 interpret (ExprName n) = do
   variables <- get
   case lookup n variables of
