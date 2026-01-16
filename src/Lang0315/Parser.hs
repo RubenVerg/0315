@@ -34,6 +34,8 @@ data Expr
   | ExprComma Expr Expr
   | ExprSemi Expr Expr
   | ExprCharacter Expr
+  | ExprCut Expr
+  | ExprExtend Expr
   | ExprIndex Expr Expr
   | ExprKeep Expr Expr
   | ExprName String
@@ -81,6 +83,7 @@ expr = lexeme $ makeExprParser term
   , [ InfixN $ op '<' ExprLess ]
   , [ InfixN $ op '=' ExprEqual ]
   , [ InfixN $ op ',' ExprComma, InfixN $ op ';' ExprSemi ]
+  , [ ms [ op '_' ExprCut, op '^' ExprExtend ] ]
   ]
   where
     op c e = lexeme $ char c $> e

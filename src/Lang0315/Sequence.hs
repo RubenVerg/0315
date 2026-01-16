@@ -9,6 +9,8 @@ module Lang0315.Sequence
 , seqUnTriangle
 , seqUnSquare
 , seqKeep
+, seqCut
+, seqExtend
 , seqCharacter
 , a000012
 , a001477
@@ -238,6 +240,12 @@ seqCharacter (Sequence xs) = Sequence $ ofIndices $ \n -> genericLength $ takeWh
 
 seqKeep :: Sequence -> Sequence -> Sequence
 seqKeep (Sequence xs) (Sequence cs) = Sequence $ concat $ zipWith genericReplicate cs xs
+
+seqCut :: Sequence -> Sequence
+seqCut (Sequence xs) = Sequence $ takeWhile (/= 0) xs
+
+seqExtend :: Sequence -> Sequence
+seqExtend (Sequence xs) = Sequence $ xs ++ repeat 0
 
 ofIndices :: (Integer -> a) -> [a]
 ofIndices f = map f $ enumFrom 0

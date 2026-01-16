@@ -13,7 +13,7 @@ You can bind a sequence to a name of one or more ASCII letters using `+name:valu
 You can operate on sequences with operators, which have the following precedence:
 
 |===
-.2+|0 (highest)|`+[]+`|Index
+.2+|0 (tightest)|`+[]+`|Index
 |`+{}+`|Filter
 .3+|1|prefix `+-+`|Negate
 |prefix `+\|+`|Absolute Value
@@ -27,8 +27,10 @@ You can operate on sequences with operators, which have the following precedence
 |left-infix `+-+`|Subtract
 |6|infix `+<+`|Less Than
 |7|infix `+=+`|Equal To
-.2+|8 (lowest)|infix `+,+`|Untriangle
+.2+|8|infix `+,+`|Untriangle
 |infix `+;+`|Unsquare
+.2+|9 (loosest)|prefix `+_+`|Cut
+|prefix `+^+`|Extend
 |===
 
 The arithmetic operations apply componentwise, mapping if unary and zipping if binary.
@@ -42,6 +44,10 @@ Filter repeats each item in the left sequence how many times the corresponding i
 Untriangle is a way to deal with triangular sequences such as https://oeis.org/A007318[`+7318+`], the sequence of binomial coefficients. Binomial coefficients are in some sense a two-index sequence. The two operations convert two indices into a single index into the flattened representation that appears in the OEIS sequences. Untriable takes each element of the left sequence, treats it as the index of a row, and then uses each element of the right sequence as the index of a column. Because the right sequence can be infinite, it is assumed that once it reaches a position that is too big to be a valid triangle index, there will be no more valid indices and the operation jumps to the next row. The operation is intended to be used as the right argument to an Index. For example, https://oeis.org/A001477[`+1477+`] is the sequence of nonnegative integers and https://oeis.org/A005843[`+5843+`] is the sequence of even nonnegative integers. `+5843,1477+` generates indices that index a triangle with all indices of type (2n, k). Using this as indices to the binomial triangle, the result is https://oeis.org/A034870[`+34870+`], the sequence of even-numbered rows of the Pascal triangle. The untriangling operation, specifically, is (i, j) -> i(i+1)/2 + j. You might also want a different operation where the two lists are zipped together for untriangling instead of the right one being reused for each row. You can get that by reimplementing the operation, such as with `+217.i+j+`.
 
 Similarly, Unsquare deals with square sequences such as https://oeis.org/A003056[`+3056+`], the sequence of the table of a+b, read by antidiagonals. `+i;j+` iterates all pairs of i and j by antidiagonals, and combines the pairs with the unsquaring operation, (i, j) -> (i+j)(i+j+1)/2 + j. `+3056[5843;5843]+` is therefore the table of 2a+2b. Similarly to triangles, you can easily recreate the zipping operation.
+
+Cut takes the longest prefix of a sequence that doesn't contain a zero.
+
+Extend adds infinite zeros past the end of a sequence.
 
 All infix operations, as well as `+[]+` and `+{}+`, evaluate the right hand side first, and the left hand side second. This is important if you use inline assignments.
 
