@@ -188,13 +188,30 @@ module Lang0315.Sequence
 , a000335
 , a005928
 , a073592
+, a061256
+, a061255
+, a000332
+, a000391
+, a005043
+, a061257
+, a000389
+, a000417
+, a000579
+, a000428
+, a107895
+, a030009
+, a092119
+, a051064
+, a173241
+, a261031
+, a030012
 ) where
 
 import Control.Monad ((>=>))
 import Data.Bifunctor (bimap)
 import Data.List (genericIndex, genericReplicate, genericLength, sort, sortOn, group, unsnoc, inits)
 import Data.Ord (Down(..))
-import Data.Maybe (isNothing, isJust, catMaybes)
+import Data.Maybe (isNothing, isJust, catMaybes, fromMaybe)
 import Data.Ratio
 import Data.Universe.Helpers (diagonals)
 
@@ -275,7 +292,7 @@ ofPositive :: (Integer -> a) -> [a]
 ofPositive f = map f $ enumFrom 1
 
 binomial :: Integer -> Integer -> Integer
-binomial n k = Rec.binomialLine n `genericIndex` k
+binomial n k = fromMaybe 0 $ Rec.binomialLine n `maybeIndex` k
 
 stirling2 :: Integer -> Integer -> Integer
 stirling2 n k = Rec.stirling2 `infiniteIndex` n `genericIndex` k
@@ -289,6 +306,12 @@ superCatalan n k = superCatalanT `genericIndex` n `genericIndex` k
 infiniteIndex :: IL.Infinite a -> Integer -> a
 infiniteIndex xs i | i < 0 = error "Negative index!"
                    | otherwise = IL.foldr (\x acc m -> if m == 0 then x else acc (m - 1)) xs i
+
+maybeIndex :: [a] -> Integer -> Maybe a
+maybeIndex _ i | i < 0 = Nothing
+maybeIndex [] _ = Nothing
+maybeIndex (x:_) 0 = Just x
+maybeIndex (_:xs) i = maybeIndex xs $ i - 1
 
 reverseDigits :: Integer -> Integer
 reverseDigits x | x >= 0 = read $ reverse $ show x
@@ -343,12 +366,24 @@ pattern (:>) :: [a] -> a -> [a]
 pattern xs :> x <- (unsnoc -> Just (xs, x))
   where xs :> x = xs ++ [x]
 
-eulerTransform :: [Integer] -> [Integer]
-eulerTransform as = 1 : bs where -- Why is 1 : needed?
+eulerTransform' :: [Integer] -> [Integer]
+eulerTransform' as = bs where
   cs = map (sum . map (\d -> d * as `genericIndex` (d - 1)) . AF.divisorsList) [1..]
   bs = zipWith f [1..] $ map reverse $ drop 1 $ inits cs
   f n (cn : ci) = (cn + sum (zipWith (*) bs ci)) `div` n
   f _ _ = error "Unreachable"
+
+eulerTransform :: [Integer] -> [Integer]
+eulerTransform = (1:) . eulerTransform'
+
+{-
+inverseEulerTransform :: [Integer] -> [Integer]
+inverseEulerTransform bs = as where
+  cs = zipWith f [1..] $ map reverse $ drop 1 $ inits bs
+  f n (bn : bi) = n * bn - sum (zipWith (*) cs bi)
+  f _ _ = error "Unreachable"
+  as = map (\n -> flip div n $ sum $ map (\(d :: Integer) -> traceWith (show . take 10) cs `genericIndex` (d - 1) * AF.runMoebius (AF.moebius $ n `div` d)) $ AF.divisorsList n) [1..]
+-}
 
 -- See LICENSE.OEIS
 -- https://oeis.org/
@@ -369,7 +404,8 @@ a011655, a061347, a102283, a130196, a131534, a010882, a153727, a080425, a144437,
 a130784, a169609, a131561, a052901, a274339, a073636, a101000, a131598, a177702, a131756 :: Sequence
 a132677, a146325, a173259, a164360, a079978, a000009, a000726, a001935, a035959, a219601 :: Sequence
 a035985, a261775, a104502, a261776, a328545, a328546, a001970, a034691, a034899, a166861 :: Sequence
-a000335, a005928, a073592  :: Sequence
+a000335, a005928, a073592, a061256, a061255, a000332, a000391, a005043, a061257, a000389 :: Sequence
+a000417, a000579, a000428, a107895, a030009, a092119, a051064, a173241, a261031, a030012 :: Sequence
 a000012 = Sequence $ repeat 1
 a001477 = Sequence $ enumFrom 0
 a000027 = Sequence $ enumFrom 1
@@ -554,6 +590,24 @@ a001970 = Sequence $ eulerTransform $ drop 1 $ IL.toList Rec.partition
 a034691 = Sequence $ eulerTransform $ scanl (*) 1 $ repeat 2
 a034899 = Sequence $ eulerTransform $ scanl (*) 2 $ repeat 2
 a166861 = Sequence $ eulerTransform fibonacci' where fibonacci' = 1 : 1 : zipWith (+) fibonacci' (drop 1 fibonacci')
-a000335 = Sequence $ drop 1 $ eulerTransform $ ofPositive $ \n -> n * (n + 1) * (n + 2) `div` 6
+a000335 = Sequence $ eulerTransform' $ ofPositive $ \n -> n * (n + 1) * (n + 2) `div` 6
 a005928 = Sequence $ eulerTransform $ cycle [-3, -3, -2]
 a073592 = Sequence $ eulerTransform $ ofPositive negate
+a061256 = Sequence $ eulerTransform $ ofPositive $ AF.sigma 1
+a061255 = Sequence $ eulerTransform $ ofPositive AF.totient
+a000332 = Sequence $ ofIndices $ \n -> binomial n 4
+a000391 = Sequence $ eulerTransform' $ drop 4 $ ofIndices $ \n -> binomial n 4
+a005043 = Sequence riordan where riordan = 1 : 0 : zipWith (\(nm, np) (a1, a2) -> (nm * (3 * a1 + 2 * a2)) `div` np) (zip [1..] [3..]) (zip riordan (drop 1 riordan))
+-- a358451 = Sequence $ inverseEulerTransform riordan where riordan = 1 : 0 : zipWith (\(nm, np) (a1, a2) -> (nm * (3 * a1 + 2 * a2)) `div` np) (zip [1..] [3..]) (zip riordan (drop 1 riordan))
+a061257 = Sequence $ eulerTransform $ ofPositive AF.carmichael
+a000389 = Sequence $ ofIndices $ \n -> binomial n 5
+a000417 = Sequence $ eulerTransform' $ drop 5 $ ofIndices $ \n -> binomial n 5
+a000579 = Sequence $ ofIndices $ \n -> binomial n 6
+a000428 = Sequence $ eulerTransform' $ drop 6 $ ofIndices $ \n -> binomial n 6
+a107895 = Sequence $ eulerTransform $ drop 1 $ IL.toList Rec.factorial
+a030009 = Sequence $ eulerTransform $ map unPrime primes
+a092119 = Sequence $ eulerTransform $ ofPositive $ \n -> adicValuation 2 $ n * 2
+a051064 = Sequence $ ofPositive $ \n -> adicValuation 3 $ n * 3
+a173241 = Sequence $ eulerTransform $ ofPositive $ \n -> adicValuation 3 $ n * 3
+a261031 = Sequence $ eulerTransform lucas' where lucas' = 1 : 3 : zipWith (+) lucas' (drop 1 lucas')
+a030012 = Sequence $ eulerTransform' $ 1 : map unPrime primes
