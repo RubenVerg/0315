@@ -1,12 +1,10 @@
-{-# LANGUAGE LambdaCase, ParallelListComp #-}
-
 module Lang0315.Sequences.Implementation where
 
 import Lang0315.Sequence
 import Lang0315.Util
 
 import Control.Monad ((>=>))
-import Data.List (genericIndex, genericReplicate, genericLength, sort, sortOn, group, inits)
+import Data.List (genericIndex, genericReplicate, genericLength, sort, sortOn, group, inits, tails)
 import Data.Ord (Down(..))
 import Data.Ratio
 import Data.Maybe (isNothing, isJust, fromMaybe)
@@ -125,7 +123,7 @@ nTimes 1 f = f
 nTimes n f = f . nTimes (n - 1) f
 
 nBonacci :: Int -> [Integer]
-nBonacci n = sq where sq = replicate (n - 1) 0 ++ 1 : fst (nTimes n (\(acc, s) -> (zipWith (+) acc s, drop 1 s)) (repeat 0, sq))
+nBonacci n = sq where sq = replicate (n - 1) 0 ++ 1 : foldl' (zipWith (+)) (repeat 0) (take n $ tails sq)
 
 -- See LICENSE.OEIS
 -- https://oeis.org/
@@ -807,6 +805,9 @@ a261047 = Sequence $ eulerTransform $ drop 2 $ IL.toList Rec.factorial
 -- |A290351: Euler transform of Bell numbers
 a290351 :: Sequence
 a290351 = Sequence $ eulerTransform $ ofPositive $ \n -> sum $ map (stirling2 n) [0..n]
+-- |A000045: Fibonacci numbers
+a000045 :: Sequence
+a000045 = Sequence $ nBonacci 2
 -- |A000073: Tribonacci numbers
 a000073 :: Sequence
 a000073 = Sequence $ nBonacci 3
