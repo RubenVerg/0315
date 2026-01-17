@@ -1,8 +1,9 @@
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE LambdaCase, ParallelListComp #-}
 
 module Lang0315.Sequences.Implementation where
 
 import Lang0315.Sequence
+import Lang0315.Util
 
 import Control.Monad ((>=>))
 import Data.List (genericIndex, genericReplicate, genericLength, sort, sortOn, group, inits)
@@ -59,11 +60,11 @@ adicValuation = loop 0 where
     (n', 0) -> loop (count + 1) p n'
     _ -> count
 
-dedekindPsiHelperA :: Integral n => AF.ArithmeticFunction n (Ratio n)
-dedekindPsiHelperA = AF.multiplicative (\p _ -> 1 + 1 % unPrime p)
+generalizedPsiA :: Integral n => Word -> AF.ArithmeticFunction n n
+generalizedPsiA k = AF.multiplicative (\p e -> unPrime p ^ (k * e) + unPrime p ^ (k * (e - 1)))
 
-dedekindPsi :: (UniqueFactorisation n, Integral n) => n -> n
-dedekindPsi n = numerator $ n % 1 * AF.runFunction dedekindPsiHelperA n
+generalizedPsi :: (UniqueFactorisation n, Integral n) => Word -> n -> n
+generalizedPsi = AF.runFunction . generalizedPsiA
 
 intSquareRoots :: [Integer]
 intSquareRoots = concat $ zipWith genericReplicate [1 :: Integer, 3..] [0..]
@@ -95,15 +96,21 @@ digitSequence = showCReal maximumAmountOfDigits >=> (\case
 realPhi :: CReal
 realPhi = (1 + sqrt 5) / 2
 
-eulerTransform' :: [Integer] -> [Integer]
-eulerTransform' as = bs where
-  cs = map (sum . map (\d -> d * as `genericIndex` (d - 1)) . AF.divisorsList) [1..]
-  bs = zipWith f [1..] $ map reverse $ drop 1 $ inits cs
-  f n (cn : ci) = (cn + sum (zipWith (*) bs ci)) `div` n
+eulerTransform'G :: Fractional a => [a] -> [a]
+eulerTransform'G as = bs where
+  cs = map (sum . map (\d -> fromInteger d * as `genericIndex` (d - 1)) . AF.divisorsList) [1..]
+  bs = zipWith f (map fromInteger [1..]) $ map reverse $ drop 1 $ inits cs
+  f n (cn : ci) = (cn + sum (zipWith (*) bs ci)) / n
   f _ _ = error "Unreachable"
 
-eulerTransform :: [Integer] -> [Integer]
-eulerTransform = (1:) . eulerTransform'
+eulerTransformG :: Fractional a => [a] -> [a]
+eulerTransformG = (1:) . eulerTransform'G
+
+eulerTransform' :: Integral a => [a] -> [a]
+eulerTransform' = map unDivisiblePromise . eulerTransform'G . map DivisiblePromise
+
+eulerTransform :: Integral a => [a] -> [a]
+eulerTransform = map unDivisiblePromise . eulerTransformG . map DivisiblePromise
 
 inverseEulerTransform :: [Integer] -> [Integer]
 inverseEulerTransform bs = as where
@@ -111,6 +118,14 @@ inverseEulerTransform bs = as where
   f n (bn : bi) = n * bn - sum (zipWith (*) cs bi)
   f _ _ = error "Unreachable"
   as = map (\n -> flip div n $ sum $ map (\d -> cs `genericIndex` (d - 1) * AF.runMoebius (AF.moebius $ n `div` d)) $ AF.divisorsList n) [1..]
+
+nTimes :: (Eq n, Num n) => n -> (a -> a) -> a -> a
+nTimes 0 _ = id
+nTimes 1 f = f
+nTimes n f = f . nTimes (n - 1) f
+
+nBonacci :: Int -> [Integer]
+nBonacci n = sq where sq = replicate (n - 1) 0 ++ 1 : fst (nTimes n (\(acc, s) -> (zipWith (+) acc s, drop 1 s)) (repeat 0, sq))
 
 -- See LICENSE.OEIS
 -- https://oeis.org/
@@ -127,9 +142,6 @@ a000027 = Sequence $ enumFrom 1
 -- |A000040: Prime numbers
 a000040 :: Sequence
 a000040 = Sequence $ map unPrime primes
--- |A000045: Fibonacci numbers
-a000045 :: Sequence
-a000045 = Sequence fibonacci where fibonacci = 0 : 1 : zipWith (+) fibonacci (drop 1 fibonacci)
 -- |A000203: Sum of the divisors of n
 a000203 :: Sequence
 a000203 = Sequence $ ofPositive $ AF.sigma 1
@@ -362,7 +374,7 @@ a005101 :: Sequence
 a005101 = Sequence $ filter (\n -> AF.sigma 1 n > 2 * n) $ enumFrom 1
 -- |A001615: Dedekind psi function
 a001615 :: Sequence
-a001615 = Sequence $ ofPositive dedekindPsi
+a001615 = Sequence $ ofPositive $ generalizedPsi 1
 -- |A003418: Least Common Multiple
 a003418 :: Sequence
 a003418 = Sequence $ ofIndices $ \n -> foldl lcm 1 [1..n]
@@ -726,3 +738,102 @@ a112354 = Sequence $ inverseEulerTransform $ drop 1 $ IL.toList Rec.factorial
 -- |A320776: Inverse Euler transform of the number of prime divisors with multiplicity
 a320776 :: Sequence
 a320776 = Sequence $ 1 : inverseEulerTransform (ofPositive $ fromIntegral . AF.bigOmega)
+-- |A144067: Euler transform of powers of three without one
+a144067 :: Sequence
+a144067 = Sequence $ eulerTransform $ scanl (*) 3 $ repeat 3
+-- |A144068: Euler transform of powers of four without one
+a144068 :: Sequence
+a144068 = Sequence $ eulerTransform $ scanl (*) 4 $ repeat 4
+-- |A144069: Euler transform of powers of five without one
+a144069 :: Sequence
+a144069 = Sequence $ eulerTransform $ scanl (*) 5 $ repeat 5
+-- |A144070: Euler transform of powers of six without one
+a144070 :: Sequence
+a144070 = Sequence $ eulerTransform $ scanl (*) 6 $ repeat 6
+-- |A144071: Euler transform of powers of seven without one
+a144071 :: Sequence
+a144071 = Sequence $ eulerTransform $ scanl (*) 7 $ repeat 7
+-- |A144072: Euler transform of powers of eight without one
+a144072 :: Sequence
+a144072 = Sequence $ eulerTransform $ scanl (*) 8 $ repeat 8
+-- |A144073: Euler transform of powers of nine without one
+a144073 :: Sequence
+a144073 = Sequence $ eulerTransform $ scanl (*) 9 $ repeat 9
+-- |A292837: Euler transform of powers of ten without one
+a292837 :: Sequence
+a292837 = Sequence $ eulerTransform $ scanl (*) 10 $ repeat 10
+-- |A065958: psi-2 function
+a065958 :: Sequence
+a065958 = Sequence $ ofPositive $ generalizedPsi 2
+-- |A065959: psi-3 function
+a065959 :: Sequence
+a065959 = Sequence $ ofPositive $ generalizedPsi 3
+-- |A065960: psi-4 function
+a065960 :: Sequence
+a065960 = Sequence $ ofPositive $ generalizedPsi 4
+-- |A351300: psi-5 function
+a351300 :: Sequence
+a351300 = Sequence $ ofPositive $ generalizedPsi 5
+-- |A351301: psi-6 function
+a351301 :: Sequence
+a351301 = Sequence $ ofPositive $ generalizedPsi 6
+-- |A351302: psi-7 function
+a351302 :: Sequence
+a351302 = Sequence $ ofPositive $ generalizedPsi 7
+-- |A351303: psi-8 function
+a351303 :: Sequence
+a351303 = Sequence $ ofPositive $ generalizedPsi 8
+-- |A351304: psi-9 function
+a351304 :: Sequence
+a351304 = Sequence $ ofPositive $ generalizedPsi 9
+-- |A351305: psi-10 function
+a351305 :: Sequence
+a351305 = Sequence $ ofPositive $ generalizedPsi 10
+-- |A301978: Euler transform of the psi-2 function
+a301978 :: Sequence
+a301978 = Sequence $ eulerTransform $ ofPositive $ generalizedPsi 2
+-- |A061159: Numerators of the Euler transform of always 1/2
+a061159 :: Sequence
+a061159 = Sequence $ map numerator $ eulerTransformG $ repeat $ 1 % 2
+-- |A061160: Numerators of the Euler transform of always 1/3
+a061160 :: Sequence
+a061160 = Sequence $ map numerator $ eulerTransformG $ repeat $ 1 % 3
+-- |A061161: Numerators of the Euler transform of always 1/4
+a061161 :: Sequence
+a061161 = Sequence $ map numerator $ eulerTransformG $ repeat $ 1 % 4
+-- |A261047: Euler tranform of the factorials from two
+a261047 :: Sequence
+a261047 = Sequence $ eulerTransform $ drop 2 $ IL.toList Rec.factorial
+-- |A290351: Euler transform of Bell numbers
+a290351 :: Sequence
+a290351 = Sequence $ eulerTransform $ ofPositive $ \n -> sum $ map (stirling2 n) [0..n]
+-- |A000073: Tribonacci numbers
+a000073 :: Sequence
+a000073 = Sequence $ nBonacci 3
+-- |A000078: Tetranacci numbers
+a000078 :: Sequence
+a000078 = Sequence $ nBonacci 4
+-- |A001591: Pentanacci numbers
+a001591 :: Sequence
+a001591 = Sequence $ nBonacci 5
+-- |A001592: Hexanacci numbers
+a001592 :: Sequence
+a001592 = Sequence $ nBonacci 6
+-- |A122189: Heptanacci numbers
+a122189 :: Sequence
+a122189 = Sequence $ nBonacci 7
+-- |A079262: Octanacci numbers
+a079262 :: Sequence
+a079262 = Sequence $ nBonacci 8
+-- |A055457: 5-ruler function
+a055457 :: Sequence
+a055457 = Sequence $ ofPositive $ \n -> adicValuation 5 $ n * 5
+-- |A373296: Euler tranform of the 5-ruler function
+a373296 :: Sequence
+a373296 = Sequence $ eulerTransform $ ofPositive $ \n -> adicValuation 5 $ n * 5
+-- |A373217: 7-ruler function
+a373217 :: Sequence
+a373217 = Sequence $ ofPositive $ \n -> adicValuation 7 $ n * 7
+-- |A373298: Euler tranform of the 7-ruler function
+a373298 :: Sequence
+a373298 = Sequence $ eulerTransform $ ofPositive $ \n -> adicValuation 7 $ n * 7

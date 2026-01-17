@@ -1,8 +1,5 @@
-{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
-
 module Lang0315.Sequence
-( pattern (:>)
-, Sequence(..)
+( Sequence(..)
 , seqDivMod
 , seqDiv
 , seqMod
@@ -20,7 +17,7 @@ module Lang0315.Sequence
 
 
 import Data.Bifunctor (bimap)
-import Data.List (genericIndex, genericReplicate, genericLength, unsnoc)
+import Data.List (genericIndex, genericReplicate, genericLength)
 import Data.Maybe (isNothing, isJust, catMaybes)
 import Data.Universe.Helpers (diagonals)
 
@@ -83,9 +80,3 @@ seqCut (Sequence xs) = Sequence $ takeWhile (/= 0) xs
 
 seqJoin :: Sequence -> Sequence -> Sequence
 seqJoin (Sequence xs) (Sequence ys) = Sequence $ xs ++ ys
-
-{-# COMPLETE [], (:>) #-}
-infixl 5 :>
-pattern (:>) :: [a] -> a -> [a]
-pattern xs :> x <- (unsnoc -> Just (xs, x))
-  where xs :> x = xs ++ [x]

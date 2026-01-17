@@ -62,6 +62,7 @@ library
                     , Lang0315.Sequences
                     , Lang0315.Sequences.Implementation
                     , Lang0315.Sequences.TH
+                    , Lang0315.Util
 
     build-depends:    base ^>=4.21.0.0
                     , arithmoi ^>=0.13.2.0
