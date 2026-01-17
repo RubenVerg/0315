@@ -1,8 +1,11 @@
+{-# OPTIONS_GHC -Wno-missing-signatures -Wno-unused-top-binds #-}
+
 module Main (main) where
 
 import Lang0315.Parser
 import Lang0315.Interpreter
 import Lang0315.Sequence
+import Lang0315.Sequences
 
 import GHC.Wasm.Prim
 import Data.Functor
@@ -48,4 +51,4 @@ run l cb path' code' = let
       (Right ss, _) -> mapM_ (jsCallCallback cb . jsStringToBigInt . toJSString . show) (take l $ unSequence $ last ss) $> jsUndefined
 
 foreign export javascript "sequences" jsSequences :: JSArray
-jsSequences = listToArray $ map (\(i, (_, desc)) -> jsMakePair (jsIntToVal $ fromIntegral i) (coerce $ toJSString desc)) sequences
+jsSequences = listToArray $ map (\(i, (_, desc)) -> jsMakePair (jsIntToVal $ fromIntegral i) (maybe jsUndefined (coerce . toJSString) desc)) sequences

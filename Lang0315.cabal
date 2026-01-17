@@ -59,6 +59,9 @@ library
     exposed-modules:  Lang0315.Interpreter
                     , Lang0315.Parser
                     , Lang0315.Sequence
+                    , Lang0315.Sequences
+                    , Lang0315.Sequences.Implementation
+                    , Lang0315.Sequences.TH
 
     build-depends:    base ^>=4.21.0.0
                     , arithmoi ^>=0.13.2.0
@@ -69,6 +72,8 @@ library
                     , mtl ^>=2.3.1
                     , universe-base ^>=1.1.4
                     , bitwise ^>=1.0.0.1
+                    , file-embed ^>=0.0.16.0
+                    , template-haskell
     
     hs-source-dirs:   src
 

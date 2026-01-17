@@ -31,6 +31,6 @@ for (const [sequence, desc] of sequences.toSorted((a, b) => a[0] - b[0])) {
 	code.textContent = sequence.toString();
 	a.appendChild(code);
 	li.appendChild(a);
-	li.appendChild(document.createTextNode(': ' + desc));
+	if (desc !== undefined) li.appendChild(document.createTextNode(': ' + desc));
 	seqs.appendChild(li);
 }

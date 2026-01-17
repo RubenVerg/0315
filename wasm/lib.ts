@@ -35,4 +35,4 @@ export default async function run(maxCount: number, callback: (n: bigint) => voi
 	if (r !== undefined) throw new Error(r);
 }
 
-export const sequences: [number, string][] = await exports.sequences();
+export const sequences: [number, string | undefined][] = await exports.sequences();
