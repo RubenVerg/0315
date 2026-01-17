@@ -193,6 +193,7 @@ module Lang0315.Sequence
 , a000332
 , a000391
 , a005043
+, a358451
 , a061257
 , a000389
 , a000417
@@ -205,6 +206,15 @@ module Lang0315.Sequence
 , a173241
 , a261031
 , a030012
+, a030010
+, a320779
+, a320781
+, a320780
+, a320778
+, a085686
+, a030011
+, a112354
+, a320776
 ) where
 
 import Control.Monad ((>=>))
@@ -376,14 +386,12 @@ eulerTransform' as = bs where
 eulerTransform :: [Integer] -> [Integer]
 eulerTransform = (1:) . eulerTransform'
 
-{-
 inverseEulerTransform :: [Integer] -> [Integer]
 inverseEulerTransform bs = as where
   cs = zipWith f [1..] $ map reverse $ drop 1 $ inits bs
   f n (bn : bi) = n * bn - sum (zipWith (*) cs bi)
   f _ _ = error "Unreachable"
-  as = map (\n -> flip div n $ sum $ map (\(d :: Integer) -> traceWith (show . take 10) cs `genericIndex` (d - 1) * AF.runMoebius (AF.moebius $ n `div` d)) $ AF.divisorsList n) [1..]
--}
+  as = map (\n -> flip div n $ sum $ map (\d -> cs `genericIndex` (d - 1) * AF.runMoebius (AF.moebius $ n `div` d)) $ AF.divisorsList n) [1..]
 
 -- See LICENSE.OEIS
 -- https://oeis.org/
@@ -404,8 +412,9 @@ a011655, a061347, a102283, a130196, a131534, a010882, a153727, a080425, a144437,
 a130784, a169609, a131561, a052901, a274339, a073636, a101000, a131598, a177702, a131756 :: Sequence
 a132677, a146325, a173259, a164360, a079978, a000009, a000726, a001935, a035959, a219601 :: Sequence
 a035985, a261775, a104502, a261776, a328545, a328546, a001970, a034691, a034899, a166861 :: Sequence
-a000335, a005928, a073592, a061256, a061255, a000332, a000391, a005043, a061257, a000389 :: Sequence
-a000417, a000579, a000428, a107895, a030009, a092119, a051064, a173241, a261031, a030012 :: Sequence
+a000335, a005928, a073592, a061256, a061255, a000332, a000391, a005043, a358451, a061257 :: Sequence
+a000389, a000417, a000579, a000428, a107895, a030009, a092119, a051064, a173241, a261031 :: Sequence
+a030012, a030010, a320779, a320781, a320780, a320778, a085686, a030011, a112354, a320776 :: Sequence
 a000012 = Sequence $ repeat 1
 a001477 = Sequence $ enumFrom 0
 a000027 = Sequence $ enumFrom 1
@@ -430,10 +439,7 @@ a002110 = Sequence $ ofIndices $ \case
   n -> product $ map unPrime [nextPrime 1..nthPrime (fromEnum n)]
 a001622 = Sequence $ digitSequence realPhi
 a001358 = Sequence $ filter (\n -> AF.bigOmega n == 2) $ enumFrom 1
-a008683 = Sequence $ ofPositive $ \n -> case AF.moebius n of
-  AF.MoebiusN -> -1
-  AF.MoebiusZ -> 0
-  AF.MoebiusP -> 1
+a008683 = Sequence $ ofPositive $ AF.runMoebius . AF.moebius
 a000032 = Sequence lucas where lucas = 2 : 1 : zipWith (+) lucas (drop 1 lucas)
 a000225 = Sequence $ map (subtract 1) $ iterate (* 2) 1
 a000110 = Sequence $ ofIndices $ \n -> sum $ map (stirling2 n) [0..n]
@@ -598,7 +604,7 @@ a061255 = Sequence $ eulerTransform $ ofPositive AF.totient
 a000332 = Sequence $ ofIndices $ \n -> binomial n 4
 a000391 = Sequence $ eulerTransform' $ drop 4 $ ofIndices $ \n -> binomial n 4
 a005043 = Sequence riordan where riordan = 1 : 0 : zipWith (\(nm, np) (a1, a2) -> (nm * (3 * a1 + 2 * a2)) `div` np) (zip [1..] [3..]) (zip riordan (drop 1 riordan))
--- a358451 = Sequence $ inverseEulerTransform riordan where riordan = 1 : 0 : zipWith (\(nm, np) (a1, a2) -> (nm * (3 * a1 + 2 * a2)) `div` np) (zip [1..] [3..]) (zip riordan (drop 1 riordan))
+a358451 = Sequence $ 1 : inverseEulerTransform (drop 1 riordan) where riordan = 1 : 0 : zipWith (\(nm, np) (a1, a2) -> (nm * (3 * a1 + 2 * a2)) `div` np) (zip [1..] [3..]) (zip riordan (drop 1 riordan))
 a061257 = Sequence $ eulerTransform $ ofPositive AF.carmichael
 a000389 = Sequence $ ofIndices $ \n -> binomial n 5
 a000417 = Sequence $ eulerTransform' $ drop 5 $ ofIndices $ \n -> binomial n 5
@@ -611,3 +617,12 @@ a051064 = Sequence $ ofPositive $ \n -> adicValuation 3 $ n * 3
 a173241 = Sequence $ eulerTransform $ ofPositive $ \n -> adicValuation 3 $ n * 3
 a261031 = Sequence $ eulerTransform lucas' where lucas' = 1 : 3 : zipWith (+) lucas' (drop 1 lucas')
 a030012 = Sequence $ eulerTransform' $ 1 : map unPrime primes
+a030010 = Sequence $ inverseEulerTransform $ map unPrime primes
+a320779 = Sequence $ inverseEulerTransform $ ofPositive AF.divisorCount
+a320781 = Sequence $ inverseEulerTransform $ ofPositive $ AF.runMoebius . AF.moebius
+a320780 = Sequence $ inverseEulerTransform $ ofPositive $ AF.sigma 1
+a320778 = Sequence $ 1 : inverseEulerTransform (ofPositive AF.totient)
+a085686 = Sequence $ inverseEulerTransform $ ofPositive $ \n -> sum $ map (stirling2 n) [0..n]
+a030011 = Sequence $ inverseEulerTransform $ 1 : map unPrime primes
+a112354 = Sequence $ inverseEulerTransform $ drop 1 $ IL.toList Rec.factorial
+a320776 = Sequence $ 1 : inverseEulerTransform (ofPositive $ fromIntegral . AF.bigOmega)
