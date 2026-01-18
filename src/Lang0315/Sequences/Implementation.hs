@@ -117,6 +117,12 @@ inverseEulerTransform bs = as where
   f _ _ = error "Unreachable"
   as = map (\n -> flip div n $ sum $ map (\d -> cs `genericIndex` (d - 1) * AF.runMoebius (AF.moebius $ n `div` d)) $ AF.divisorsList n) [1..]
 
+binomialTransform :: [Integer] -> [Integer]
+binomialTransform as = zipWith (sum .: zipWith (*)) (IL.toList Rec.binomial) (drop 1 $ inits as)
+
+inverseBinomialTransform :: [Integer] -> [Integer]
+inverseBinomialTransform as = zipWith3 (\n -> sum .: zipWith3 (\k bn a -> (-1) ^ (n - k) * bn * a) [0..]) [0::Integer ..] (IL.toList Rec.binomial) (drop 1 $ inits as)
+
 nTimes :: (Eq n, Num n) => n -> (a -> a) -> a -> a
 nTimes 0 _ = id
 nTimes 1 f = f
@@ -838,3 +844,9 @@ a373217 = Sequence $ ofPositive $ \n -> adicValuation 7 $ n * 7
 -- |A373298: Euler tranform of the 7-ruler function
 a373298 :: Sequence
 a373298 = Sequence $ eulerTransform $ ofPositive $ \n -> adicValuation 7 $ n * 7
+-- |A057427: A zero and then always one
+a057427 :: Sequence
+a057427 = Sequence $ 0 : repeat 1
+-- |A000296: Set partitions without singletons
+a000296 :: Sequence
+a000296 = Sequence $ inverseBinomialTransform $ ofIndices $ \n -> sum $ map (stirling2 n) [0..n]

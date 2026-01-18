@@ -4,6 +4,7 @@ module Lang0315.Util
 ( pattern (:>)
 , pattern (:%)
 , DivisiblePromise(..)
+, (.:)
 ) where
 
 import Data.List (unsnoc)
@@ -47,3 +48,7 @@ instance Integral a => RealFrac (DivisiblePromise a) where
   round = fromIntegral . unDivisiblePromise
   floor = fromIntegral . unDivisiblePromise
   ceiling = fromIntegral . unDivisiblePromise
+
+-- | Composition for two-variable functions
+(.:) :: (c -> d) -> (a -> b -> c) -> a -> b -> d
+(.:) f g a b = f $ g a b
