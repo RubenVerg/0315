@@ -15,7 +15,7 @@ import Control.Monad.Combinators.Expr
 import Numeric.Natural
 import Data.Void
 import Data.Functor (($>))
-import Data.List.NonEmpty (NonEmpty((:|)))
+import Data.List.NonEmpty (NonEmpty((:|)), some1)
 import Data.Bifunctor (first)
 import Data.Function ((&))
 
@@ -40,6 +40,7 @@ data Expr
   | ExprKeep Expr Expr
   | ExprName String
   | ExprAssign String Expr
+  | ExprCall String (NonEmpty Expr)
   | ExprEmpty
   deriving (Show, Eq)
 
@@ -56,7 +57,7 @@ sequence = lexeme $ ExprSequence . read <$> some digitChar
 
 nameOrAssign :: Parser Expr
 nameOrAssign = do
-  name <- lexeme $ some letterChar
+  name <- lexeme $ liftA2 (:) lowerChar (many letterChar)
   option (ExprName name) $ do
     _ <- lexeme $ char ':'
     ExprAssign name <$> expr
@@ -70,8 +71,17 @@ subscript l r f = flip f <$> between (lexeme $ char l) (lexeme $ char r) expr
 subscripted :: Parser Expr -> Parser (Expr -> Expr) -> Parser Expr
 subscripted a s = foldl (&) <$> a <*> many s
 
+argument :: Parser Expr
+argument = subscripted subscriptable (subscript '[' ']' ExprIndex <|> subscript '{' '}' ExprKeep)
+
+functionCall :: Parser Expr
+functionCall = do
+  name <- lexeme $ liftA2 (:) upperChar (many letterChar)
+  args <- some1 $ lexeme argument
+  pure $ ExprCall name args
+
 term :: Parser Expr
-term = subscripted subscriptable (subscript '[' ']' ExprIndex <|> subscript '{' '}' ExprKeep)
+term = functionCall <|> argument
 
 expr :: Parser Expr
 expr = lexeme $ makeExprParser term

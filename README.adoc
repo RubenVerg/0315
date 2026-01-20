@@ -1,3 +1,5 @@
+:imagesdir: images/
+
 = 0315
 
 A language where the only type of data is the sequence, and numeric literals correspond to OEIS sequence IDs.
@@ -51,11 +53,22 @@ Cut takes the longest prefix of a sequence that doesn't contain a zero.
 
 All infix operations, as well as `+[]+` and `+{}+`, evaluate the right hand side first, and the left hand side second. This is important if you use inline assignments.
 
+You can also use transforms on sequences. The following transforms are supported:
+
+|===
+|`+E+`|Euler transform|image:E.svg[Formula for Euler transform]
+|`+Ei+`|Inverse Euler transform|image:Ei.svg[Formula for inverse Euler transform]
+|`+B+`|Binomial transform|image:B.svg[Formula for binomial transform]
+|`+Bi+`|Inverse binomial transform|image:Bi.svg[Formula for inverse binomial transform]
+|===
+
+Transforms are written by first using the function ID and then any expression. They apply before operators, so `+E a + b+` is `+(E a) + b+`, not `+E (a + b)+`
+
 == Worked examples
 
 === A050376
 
-Starting with something really simple, https://oeis.org/A050376[`+50736+`], the sequence of numbers that are perfect prime powers with exponents that are powers of two (image:https://math.vercel.app/?from=p\^{2^k}[p\^(2^k)]). There is a sequence for "the exponent if a number is a prime power, and zero otherwise": https://oeis.org/A100995[`+100995+`]. We use it as an index into https://oeis.org/A100995[`+209229+`] to see whether each of the powers is a power of two (zero is not a power of two). This is the mask that we need to use to filter the positive integers, https://oeis.org/A000027[`+27+`]. The final code is `+27{209229[100995]}+`. This can golf to `+27{&79.100995}+` (sometimes building a sequence is shorter than referring to it!).
+Starting with something really simple, https://oeis.org/A050376[`+50736+`], the sequence of numbers that are perfect prime powers with exponents that are powers of two (image:https://math.vercel.app/?color=lime&from=p\^{2^k}[p\^(2^k)]). There is a sequence for "the exponent if a number is a prime power, and zero otherwise": https://oeis.org/A100995[`+100995+`]. We use it as an index into https://oeis.org/A100995[`+209229+`] to see whether each of the powers is a power of two (zero is not a power of two). This is the mask that we need to use to filter the positive integers, https://oeis.org/A000027[`+27+`]. The final code is `+27{209229[100995]}+`. This can golf to `+27{&79.100995}+` (sometimes building a sequence is shorter than referring to it!).
 
 === A383896
 
