@@ -127,7 +127,7 @@ binomialTransform as = zipWith (sum .: zipWith (*)) (IL.toList Rec.binomial) (dr
 inverseBinomialTransform :: [Integer] -> [Integer]
 inverseBinomialTransform as = zipWith3 (\n -> sum .: zipWith3 (\k bn a -> (-1) ^ (n - k) * bn * a) [0..]) [0::Integer ..] (IL.toList Rec.binomial) (drop 1 $ inits as)
 
-nTimes :: (Eq n, Num n) => n -> (a -> a) -> a -> a
+nTimes :: Int -> (a -> a) -> a -> a
 nTimes 0 _ = id
 nTimes 1 f = f
 nTimes n f = f . nTimes (n - 1) f
@@ -168,6 +168,9 @@ badLogRatio _ = error "log on a non-1 rational"
 
 logR :: (Eq a, Integral a) => PowerSeries (Ratio a) -> PowerSeries (Ratio a)
 logR = PS.log' badLogRatio
+
+bellNumbers :: [Integer]
+bellNumbers = flip map [0..] $ sum . infiniteIndex Rec.stirling2
 
 -- See LICENSE.OEIS
 -- https://oeis.org/
@@ -248,7 +251,7 @@ a000225 :: Sequence
 a000225 = Sequence $ map (subtract 1) $ iterate (* 2) 1
 -- |A000110: Bell or exponential numbers
 a000110 :: Sequence
-a000110 = Sequence $ ofIndices $ \n -> sum $ map (stirling2 n) [0..n]
+a000110 = Sequence bellNumbers
 -- |A005408: The odd numbers
 a005408 :: Sequence
 a005408 = Sequence $ ofIndices $ \n -> 2 * n + 1
@@ -770,7 +773,7 @@ a320778 :: Sequence
 a320778 = Sequence $ 1 : inverseEulerTransform (ofPositive AF.totient)
 -- |A085686: Inverse Euler transform of Bell numbers
 a085686 :: Sequence
-a085686 = Sequence $ inverseEulerTransform $ ofPositive $ \n -> sum $ map (stirling2 n) [0..n]
+a085686 = Sequence $ inverseEulerTransform $ drop 1 bellNumbers
 -- |A030011: Inverse Euler transform of one and the primes
 a030011 :: Sequence
 a030011 = Sequence $ inverseEulerTransform $ 1 : map unPrime primes
@@ -848,7 +851,7 @@ a261047 :: Sequence
 a261047 = Sequence $ eulerTransform $ drop 2 $ IL.toList Rec.factorial
 -- |A290351: Euler transform of Bell numbers
 a290351 :: Sequence
-a290351 = Sequence $ eulerTransform $ ofPositive $ \n -> sum $ map (stirling2 n) [0..n]
+a290351 = Sequence $ eulerTransform $ drop 1 bellNumbers
 -- |A000045: Fibonacci numbers
 a000045 :: Sequence
 a000045 = Sequence $ nBonacci 2
@@ -887,7 +890,7 @@ a057427 :: Sequence
 a057427 = Sequence $ 0 : repeat 1
 -- |A000296: Set partitions without singletons
 a000296 :: Sequence
-a000296 = Sequence $ inverseBinomialTransform $ ofIndices $ \n -> sum $ map (stirling2 n) [0..n]
+a000296 = Sequence $ inverseBinomialTransform bellNumbers
 -- |A000111: Up/down numbers
 a000111 :: Sequence
 a000111 = Sequence $ egf $ (1 + s) / c where (s, c) = sinCosR X
@@ -905,7 +908,7 @@ a000248 :: Sequence
 a000248 = Sequence $ egf $ expR $ X * expR X
 -- |A000258: Number of pairs of set partitions where the first is finer than the second
 a000258 :: Sequence
-a000258 = Sequence $ ofIndices (\n -> sum $ zipWith (*) (Rec.stirling2 `infiniteIndex` n) bell) where bell = ofIndices $ \n -> sum $ map (stirling2 n) [0..n]
+a000258 = Sequence $ ofIndices (\n -> sum $ zipWith (*) (Rec.stirling2 `infiniteIndex` n) bellNumbers)
 -- |A006252: Sequence with EGF 1/(1 - log(1 + x))
 a006252 :: Sequence
 a006252 = Sequence $ egf $ recip $ 1 - logR (1 + X)
@@ -921,3 +924,15 @@ a009116 = Sequence $ egf $ c / expR X where (_, c) = sinCosR X
 -- |A094088: Sequence with EGF 1/(2 - cosh(x))
 a094088 :: Sequence
 a094088 = Sequence $ evens $ egf $ recip $ 2 - c where (_, c) = sinhCoshR X
+-- |A005493: 2-Bell numbers
+a005493 :: Sequence
+a005493 = Sequence $ binomialTransform $ drop 1 bellNumbers
+-- |A005494: 3-Bell numbers
+a005494 :: Sequence
+a005494 = Sequence $ nTimes 2 binomialTransform $ drop 1 bellNumbers
+-- |A045379: 4-Bell numbers
+a045379 :: Sequence
+a045379 = Sequence $ nTimes 3 binomialTransform $ drop 1 bellNumbers
+-- |A196834: 5-Bell numbers
+a196834 :: Sequence
+a196834 = Sequence $ nTimes 4 binomialTransform $ drop 1 bellNumbers
