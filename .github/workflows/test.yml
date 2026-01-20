@@ -1,4 +1,4 @@
-name: Build
+name: Test
 on:
   push:
     branches: main
@@ -7,7 +7,7 @@ on:
 
 jobs:
   sequences:
-    name: 
+    name: Sequence Tests
     runs-on: ubuntu-22.04
 
     steps:
