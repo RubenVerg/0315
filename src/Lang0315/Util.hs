@@ -5,6 +5,9 @@ module Lang0315.Util
 , pattern (:%)
 , DivisiblePromise(..)
 , (.:)
+, uninterleave
+, evens
+, odds
 ) where
 
 import Data.List (unsnoc)
@@ -52,3 +55,12 @@ instance Integral a => RealFrac (DivisiblePromise a) where
 -- | Composition for two-variable functions
 (.:) :: (c -> d) -> (a -> b -> c) -> a -> b -> d
 (.:) f g a b = f $ g a b
+
+uninterleave :: Foldable f => f a -> ([a], [a])
+uninterleave = foldr (\x ~(xs, ys) -> (x : ys, xs)) ([], [])
+
+evens :: Foldable f => f a -> [a]
+evens = fst . uninterleave
+
+odds :: Foldable f => f a -> [a]
+odds = snd . uninterleave

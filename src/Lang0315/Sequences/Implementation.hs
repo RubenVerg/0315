@@ -1,7 +1,11 @@
+{-# LANGUAGE PatternSynonyms, ViewPatterns #-}
+
 module Lang0315.Sequences.Implementation where
 
 import Lang0315.Sequence
 import Lang0315.Util
+import Lang0315.PowerSeries (PowerSeries(..))
+import qualified Lang0315.PowerSeries as PS
 
 import Control.Monad ((>=>))
 import Data.List (genericIndex, genericReplicate, genericLength, sort, sortOn, group, inits, tails)
@@ -130,6 +134,40 @@ nTimes n f = f . nTimes (n - 1) f
 
 nBonacci :: Int -> [Integer]
 nBonacci n = sq where sq = replicate (n - 1) 0 ++ 1 : foldl' (zipWith (+)) (repeat 0) (take n $ tails sq)
+
+pattern X :: Num a => PowerSeries a
+pattern X <- (const Nothing -> Just ())
+  where X = PS.fromCoefficients [0, 1]
+
+egf' :: Num a => PowerSeries a -> [a]
+egf' x = IL.toList $ IL.zipWith (*) (IL.map fromInteger Rec.factorial) (coefficients' x)
+
+egf :: Integral a => PowerSeries (Ratio a) -> [a]
+egf = map numerator . egf'
+
+badSinCosRatio :: (Eq a, Integral a) => Ratio a -> (Ratio a, Ratio a)
+badSinCosRatio 0 = (0, 1)
+badSinCosRatio _ = error "sin or cos on a nonzero rational"
+
+sinCosR :: (Eq a, Integral a) => PowerSeries (Ratio a) -> (PowerSeries (Ratio a), PowerSeries (Ratio a))
+sinCosR = PS.sinCos' badSinCosRatio
+
+sinhCoshR :: (Eq a, Integral a) => PowerSeries (Ratio a) -> (PowerSeries (Ratio a), PowerSeries (Ratio a))
+sinhCoshR = PS.sinhCosh' badSinCosRatio
+
+badExpRatio :: (Eq a, Integral a) => Ratio a -> Ratio a
+badExpRatio 0 = 1
+badExpRatio _ = error "exp on a nonzero rational"
+
+expR :: (Eq a, Integral a) => PowerSeries (Ratio a) -> PowerSeries (Ratio a)
+expR = PS.exp' badExpRatio
+
+badLogRatio :: (Eq a, Integral a) => Ratio a -> Ratio a
+badLogRatio 1 = 0
+badLogRatio _ = error "log on a non-1 rational"
+
+logR :: (Eq a, Integral a) => PowerSeries (Ratio a) -> PowerSeries (Ratio a)
+logR = PS.log' badLogRatio
 
 -- See LICENSE.OEIS
 -- https://oeis.org/
@@ -850,3 +888,36 @@ a057427 = Sequence $ 0 : repeat 1
 -- |A000296: Set partitions without singletons
 a000296 :: Sequence
 a000296 = Sequence $ inverseBinomialTransform $ ofIndices $ \n -> sum $ map (stirling2 n) [0..n]
+-- |A000111: Up/down numbers
+a000111 :: Sequence
+a000111 = Sequence $ egf $ (1 + s) / c where (s, c) = sinCosR X
+-- |A000364: Secant numbers
+a000364 :: Sequence
+a000364 = Sequence $ evens $ egf $ 1 / c where (_, c) = sinCosR X
+-- |A000182: Tangent numbers
+a000182 :: Sequence
+a000182 = Sequence $ odds $ egf $ s / c where (s, c) = sinCosR X
+-- |A000587: Complementary Bell numbers
+a000587 :: Sequence
+a000587 = Sequence $ ofIndices $ \n -> sum $ zipWith (*) (Rec.stirling2 `infiniteIndex` n) (cycle [1, -1])
+-- |A000248: Sequence with EGF exp(x * exp(x))
+a000248 :: Sequence
+a000248 = Sequence $ egf $ expR $ X * expR X
+-- |A000258: Number of pairs of set partitions where the first is finer than the second
+a000258 :: Sequence
+a000258 = Sequence $ ofIndices (\n -> sum $ zipWith (*) (Rec.stirling2 `infiniteIndex` n) bell) where bell = ofIndices $ \n -> sum $ map (stirling2 n) [0..n]
+-- |A006252: Sequence with EGF 1/(1 - log(1 + x))
+a006252 :: Sequence
+a006252 = Sequence $ egf $ recip $ 1 - logR (1 + X)
+-- |A024429: Sequence with EGF sinh(exp(x) - 1)
+a024429 :: Sequence
+a024429 = Sequence $ egf s where (s, _) = sinhCoshR $ expR X - 1
+-- |A002741: Logarithmic numbes
+a002741 :: Sequence
+a002741 = Sequence $ egf $ negate (logR $ 1 - X) * expR (negate X)
+-- |A009116: Sequence with EGF cos(x)/exp(x)
+a009116 :: Sequence
+a009116 = Sequence $ egf $ c / expR X where (_, c) = sinCosR X
+-- |A094088: Sequence with EGF 1/(2 - cosh(x))
+a094088 :: Sequence
+a094088 = Sequence $ evens $ egf $ recip $ 2 - c where (_, c) = sinhCoshR X

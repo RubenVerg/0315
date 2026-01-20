@@ -58,6 +58,7 @@ library
 
     exposed-modules:  Lang0315.Interpreter
                     , Lang0315.Parser
+                    , Lang0315.PowerSeries
                     , Lang0315.Sequence
                     , Lang0315.Sequences
                     , Lang0315.Sequences.Implementation
