@@ -34,3 +34,26 @@ for (const [sequence, desc] of sequences.toSorted((a, b) => a[0] - b[0])) {
 	if (desc !== undefined) li.appendChild(document.createTextNode(': ' + desc));
 	seqs.appendChild(li);
 }
+
+const search = new URLSearchParams(window.location.search);
+
+if (search.has('c')) try {
+	count.value = Number.parseInt(search.get('c'));
+} catch {}
+
+if (search.has('p')) {
+	input.value = atob(search.get('p'));
+	if (search.has('r')) runB.click();
+}
+
+document.querySelector('#copy').addEventListener('click', async () => {
+	const search = new URLSearchParams();
+	search.set('p', btoa(input.value));
+	search.set('c', Number.parseInt(count.value));
+	const url = new URL(window.location.href);
+	url.search = search.toString();
+	try {
+		await window.navigator.clipboard.write(url.toString());
+	} catch {}
+	window.history.replaceState(null, '', url.toString());
+});
