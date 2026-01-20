@@ -118,3 +118,16 @@ executable 0315-wasmlib
     else
         -- build-depends:ghc-wasm-compat
         -- ghc-options:  -W -fplugin GHC.Wasm.FFI.Plugin
+
+test-suite 0315-sequence-tests
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    main-is:          Main.hs
+    build-depends:    base
+                    , Lang0315
+                    , hspec ^>=2.11.16
+                    , oeis2 ^>=1.0.9
+                    , text
+                    , directory
+    hs-source-dirs:   test/sequence
+    default-language: GHC2024
