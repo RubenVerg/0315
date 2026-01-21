@@ -32,6 +32,7 @@ jobs:
             ${{ steps.setup-haskell.outputs.cabal-store }}
             dist-newstyle
             cache/sequences
+            oeisdata
           key: sequence-tests-${{ hashFiles('dist-newstyle/cache/plan.json') }}
           restore-keys: |
             sequence-tests-

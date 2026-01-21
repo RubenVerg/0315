@@ -71,8 +71,6 @@ getSequenceFromData p num = do
     Left _ -> pure Nothing
     Right str -> do
       let s = read $ printf "[%s]" $ concatMap (filter (not . isSpace) . drop (length ("%S A000000 " :: String))) $ filter (\line -> take 2 line `elem` ["%S", "%T", "%U"]) $ lines str
-      putStr $ show num ++ ": "
-      print s
       Just s <$ writeFile p (show s)
 
 getSequence :: Natural -> IO (Maybe [Integer])
