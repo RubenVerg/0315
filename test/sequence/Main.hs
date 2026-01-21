@@ -19,6 +19,7 @@ import Data.Aeson
 import Data.Aeson.Types (prependFailure, typeMismatch)
 import qualified Data.Aeson.KeyMap as KM
 import qualified Data.Vector as V
+import qualified Data.ByteString.Char8 as BS
 
 newtype R = R [Integer]
 
@@ -45,6 +46,7 @@ makeRequest = fmap (\req -> req{ checkResponse = \rq rs -> do
   let Status code _ = responseStatus rs
   guard $ code < 200 || code >= 300
   body <- responseBody rs
+  BS.putStrLn body
   let ex = StatusCodeException (void rs) body
   throwIO $ HttpExceptionRequest rq ex }) . parseRequest . printf "https://oeis.org/search?fmt=json&q=id:A%06d"
 
