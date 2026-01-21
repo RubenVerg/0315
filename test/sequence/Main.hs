@@ -13,6 +13,8 @@ import System.Directory
 import Numeric.Natural
 import Text.Printf
 import Network.HTTP.Simple
+import Network.HTTP.Client.Conduit (Request(checkResponse), Response (responseStatus, responseBody), HttpExceptionContent (StatusCodeException))
+import Network.HTTP.Types.Status (Status(..))
 import Data.Aeson
 import Data.Aeson.Types (prependFailure, typeMismatch)
 import qualified Data.Aeson.KeyMap as KM
@@ -39,7 +41,12 @@ makePath :: Natural -> FilePath
 makePath = printf "%s/%d" rootPath
 
 makeRequest :: Natural -> IO Request
-makeRequest = parseRequestThrow . printf "https://oeis.org/search?fmt=json&q=A%06d"
+makeRequest = fmap (\req -> req{ checkResponse = \rq rs -> do 
+  let Status code _ = responseStatus rs
+  guard $ code < 200 || code >= 300
+  body <- responseBody rs
+  let ex = StatusCodeException (void rs) body
+  throwIO $ HttpExceptionRequest rq ex }) . parseRequest . printf "https://oeis.org/search?fmt=json&q=id:A%06d"
 
 getSequence' :: Natural -> IO (Maybe [Integer])
 getSequence' num = do
