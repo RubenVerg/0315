@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main (main) where
 
 import Test.Hspec
@@ -10,14 +12,34 @@ import Control.Exception
 import System.Directory
 import Numeric.Natural
 import Text.Printf
-import qualified Data.Text as T
-import qualified Math.OEIS as OEIS
+import Network.HTTP.Simple
+import Data.Aeson
+import Data.Aeson.Types (prependFailure, typeMismatch)
+import qualified Data.Aeson.KeyMap as KM
+import qualified Data.Vector as V
+
+newtype R = R [Integer]
+
+instance FromJSON R where
+  parseJSON (Array vec) | not (V.null vec) =
+    let res = V.head vec
+    in case res of
+      (Object km) -> case KM.lookup "data" km of
+        Just (String t) -> pure $ R $ read $ printf "[%s]" t
+        Just i -> prependFailure "cannot parse OEIS sequence, type of data: " (typeMismatch "String" i)
+        Nothing -> fail "cannot parse OEIS sequence, missing data in results"
+      i -> prependFailure "cannot parse OEIS sequence, contents of results: " (typeMismatch "Object" i)
+  parseJSON (Array _) = fail "cannot parse OEIS sequence, empty results"
+  parseJSON i = prependFailure "cannot parse OEIS sequence, " (typeMismatch "Array" i)
 
 rootPath :: FilePath
 rootPath = "cache/sequences"
 
 makePath :: Natural -> FilePath
 makePath = printf "%s/%d" rootPath
+
+makeRequest :: Natural -> IO Request
+makeRequest = parseRequestThrow . printf "https://oeis.org/search?fmt=json&q=A%06d"
 
 getSequence' :: Natural -> IO (Maybe [Integer])
 getSequence' num = do
@@ -26,10 +48,10 @@ getSequence' num = do
   case d of
     Right str -> pure $ Just $ read str
     Left _ -> do
-      oeis <- OEIS.lookupSeq' (OEIS.ID $ T.pack $ printf "A%d" num)
-      case OEIS.seqData <$> oeis of
+      oeis <- makeRequest num >>= fmap getResponseBody . httpJSON
+      case oeis of
         Nothing -> pure Nothing
-        Just seqData -> do
+        Just (R seqData) -> do
           Just seqData <$ writeFile p (show seqData) -- `catch` (\(_ :: IOException) -> pure ())
 
 main :: IO ()

@@ -126,7 +126,9 @@ test-suite 0315-sequence-tests
     build-depends:    base
                     , Lang0315
                     , hspec ^>=2.11.16
-                    , oeis2 ^>=1.0.9
+                    , http-conduit ^>=2.3.9
+                    , aeson ^>=2.2.3.0
+                    , vector
                     , text
                     , directory
     hs-source-dirs:   test/sequence
