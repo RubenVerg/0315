@@ -127,8 +127,6 @@ test-suite 0315-sequence-tests
                     , Lang0315
                     , hspec ^>=2.11.16
                     , http-conduit ^>=2.3.9
-                    , http-types
-                    , bytestring
                     , aeson ^>=2.2.3.0
                     , vector
                     , text

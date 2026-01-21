@@ -35,6 +35,14 @@ jobs:
           key: sequence-tests-${{ hashFiles('dist-newstyle/cache/plan.json') }}
           restore-keys: |
             sequence-tests-
+
+      - name: Clone oeisdata repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'oeis/oeisdata'
+          path: 'oeisdata'
+          sparse-checkout: |
+            seq
             
       - name: Test
         run: 'cabal test 0315-sequence-tests'
