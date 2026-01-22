@@ -988,3 +988,195 @@ a258650 = Sequence $ ofIndices $ nTimes 10 $ makeArithmeticDerivative $ const 1
 -- |A258851: Pi-based arithmetic derivative
 a258851 :: Sequence
 a258851 = Sequence $ ofIndices $ makeArithmeticDerivative $ primeCount . unPrime
+-- |A007395: Always two
+a007395 :: Sequence
+a007395 = Sequence $ repeat 2
+-- |A010701: Always three
+a010701 :: Sequence
+a010701 = Sequence $ repeat 3
+-- |A010716: Always five
+a010716 :: Sequence
+a010716 = Sequence $ repeat 5
+-- |A010722: Always six
+a010722 :: Sequence
+a010722 = Sequence $ repeat 6
+-- |A010727: Always seven
+a010727 :: Sequence
+a010727 = Sequence $ repeat 7
+-- |A010731: Always eight
+a010731 :: Sequence
+a010731 = Sequence $ repeat 8
+-- |A010734: Always nine
+a010734 :: Sequence
+a010734 = Sequence $ repeat 9
+-- |A010692: Always ten
+a010692 :: Sequence
+a010692 = Sequence $ repeat 10
+-- |A010850: Always 11
+a010850 :: Sequence
+a010850 = Sequence $ repeat 11
+-- |A010851: Always 12
+a010851 :: Sequence
+a010851 = Sequence $ repeat 12
+-- |A010852: Always 13
+a010852 :: Sequence
+a010852 = Sequence $ repeat 13
+-- |A010853: Always 14
+a010853 :: Sequence
+a010853 = Sequence $ repeat 14
+-- |A010854: Always 15
+a010854 :: Sequence
+a010854 = Sequence $ repeat 15
+-- |A010855: Always 16
+a010855 :: Sequence
+a010855 = Sequence $ repeat 16
+-- |A010856: Always 17
+a010856 :: Sequence
+a010856 = Sequence $ repeat 17
+-- |A010857: Always 18
+a010857 :: Sequence
+a010857 = Sequence $ repeat 18
+-- |A010858: Always 19
+a010858 :: Sequence
+a010858 = Sequence $ repeat 19
+-- |A010859: Always 20
+a010859 :: Sequence
+a010859 = Sequence $ repeat 20
+-- |A010860: Always 21
+a010860 :: Sequence
+a010860 = Sequence $ repeat 21
+-- |A010861: Always 22
+a010861 :: Sequence
+a010861 = Sequence $ repeat 22
+-- |A010862: Always 23
+a010862 :: Sequence
+a010862 = Sequence $ repeat 23
+-- |A010863: Always 24
+a010863 :: Sequence
+a010863 = Sequence $ repeat 24
+-- |A010864: Always 25
+a010864 :: Sequence
+a010864 = Sequence $ repeat 25
+-- |A010865: Always 26
+a010865 :: Sequence
+a010865 = Sequence $ repeat 26
+-- |A010866: Always 27
+a010866 :: Sequence
+a010866 = Sequence $ repeat 27
+-- |A010867: Always 28
+a010867 :: Sequence
+a010867 = Sequence $ repeat 28
+-- |A010868: Always 29
+a010868 :: Sequence
+a010868 = Sequence $ repeat 29
+-- |A010869: Always 30
+a010869 :: Sequence
+a010869 = Sequence $ repeat 30
+-- |A010870: Always 31
+a010870 :: Sequence
+a010870 = Sequence $ repeat 31
+-- |A010871: Always 32
+a010871 :: Sequence
+a010871 = Sequence $ repeat 32
+-- |A040000: A one and then always two
+a040000 :: Sequence
+a040000 = Sequence $ 1 : repeat 2
+-- |A040002: A two and then always four
+a040002 :: Sequence
+a040002 = Sequence $ 2 : repeat 4
+-- |A040006: A three and then always six
+a040006 :: Sequence
+a040006 = Sequence $ 3 : repeat 6
+-- |A040012: A four and then always eight
+a040012 :: Sequence
+a040012 = Sequence $ 4 : repeat 8
+-- |A040020: A five and then always ten
+a040020 :: Sequence
+a040020 = Sequence $ 5 : repeat 10
+-- |A040030: A six and then always 12
+a040030 :: Sequence
+a040030 = Sequence $ 6 : repeat 12
+-- |A040042: A seven and then always 14
+a040042 :: Sequence
+a040042 = Sequence $ 7 : repeat 14
+-- |A040056: An eight and then always 16
+a040056 :: Sequence
+a040056 = Sequence $ 8 : repeat 16
+-- |A040072: A nine and then always 18
+a040072 :: Sequence
+a040072 = Sequence $ 9 : repeat 18
+-- |A040090: A ten and then always 20
+a040090 :: Sequence
+a040090 = Sequence $ 10 : repeat 20
+-- |A040110: A 11 and then always 22
+a040110 :: Sequence
+a040110 = Sequence $ 11 : repeat 22
+-- |A040132: A 12 and then always 24
+a040132 :: Sequence
+a040132 = Sequence $ 12 : repeat 24
+-- |A040156: A 13 and then always 26
+a040156 :: Sequence
+a040156 = Sequence $ 13 : repeat 26
+-- |A040182: A 14 and then always 28
+a040182 :: Sequence
+a040182 = Sequence $ 14 : repeat 28
+-- |A040210: A 15 and then always 30
+a040210 :: Sequence
+a040210 = Sequence $ 15 : repeat 30
+-- |A040240: A 16 and then always 32
+a040240 :: Sequence
+a040240 = Sequence $ 16 : repeat 32
+-- |A040272: A 17 and then always 34
+a040272 :: Sequence
+a040272 = Sequence $ 17 : repeat 34
+-- |A040306: A 18 and then always 36
+a040306 :: Sequence
+a040306 = Sequence $ 18 : repeat 36
+-- |A040342: A 19 and then always 38
+a040342 :: Sequence
+a040342 = Sequence $ 19 : repeat 38
+-- |A040380: A 20 and then always 40
+a040380 :: Sequence
+a040380 = Sequence $ 20 : repeat 40
+-- |A040420: A 21 and then always 42
+a040420 :: Sequence
+a040420 = Sequence $ 21 : repeat 42
+-- |A040462: A 22 and then always 44
+a040462 :: Sequence
+a040462 = Sequence $ 22 : repeat 44
+-- |A040506: A 23 and then always 46
+a040506 :: Sequence
+a040506 = Sequence $ 23 : repeat 46
+-- |A040552: A 24 and then always 48
+a040552 :: Sequence
+a040552 = Sequence $ 24 : repeat 48
+-- |A040600: A 25 and then always 50
+a040600 :: Sequence
+a040600 = Sequence $ 25 : repeat 50
+-- |A040650: A 26 and then always 52
+a040650 :: Sequence
+a040650 = Sequence $ 26 : repeat 52
+-- |A040702: A 27 and then always 54
+a040702 :: Sequence
+a040702 = Sequence $ 27 : repeat 54
+-- |A040756: A 28 and then always 56
+a040756 :: Sequence
+a040756 = Sequence $ 28 : repeat 56
+-- |A040812: A 29 and then always 58
+a040812 :: Sequence
+a040812 = Sequence $ 29 : repeat 58
+-- |A040870: A 30 and then always 60
+a040870 :: Sequence
+a040870 = Sequence $ 30 : repeat 60
+-- |A040930: A 31 and then always 62
+a040930 :: Sequence
+a040930 = Sequence $ 31 : repeat 62
+-- |A255910: A one and then always seven
+a255910 :: Sequence
+a255910 = Sequence $ 1 : repeat 7
+-- |A057428: A zero and then always negative one
+a057428 :: Sequence
+a057428 = Sequence $ 0 : repeat (-1)
+-- |A157928: Two zeros and then always one
+a157928 :: Sequence
+a157928 = Sequence $ 0 : 0 : repeat 1
