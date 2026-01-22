@@ -15,7 +15,7 @@ import Data.Maybe (isNothing, isJust, fromMaybe)
 
 import Data.Bits (popCount)
 import Data.Bits.Bitwise (toListLE)
-import Math.NumberTheory.Primes (nextPrime, primes, unPrime, factorise, isPrime, UniqueFactorisation)
+import Math.NumberTheory.Primes (nextPrime, primes, unPrime, factorise, isPrime, UniqueFactorisation, Prime)
 import Math.NumberTheory.Primes.Counting (primeCount, nthPrime)
 import qualified Math.NumberTheory.ArithmeticFunctions as AF
 import qualified Math.NumberTheory.Recurrences as Rec
@@ -171,6 +171,12 @@ logR = PS.log' badLogRatio
 
 bellNumbers :: [Integer]
 bellNumbers = flip map [0..] $ sum . infiniteIndex Rec.stirling2
+
+makeArithmeticDerivative :: (UniqueFactorisation n, Integral n) => (Prime n -> n) -> (n -> n)
+makeArithmeticDerivative f = go where
+  go 0 = 0
+  go 1 = 0
+  go n = numerator $ (n % 1) * sum (map (\(p, e) -> fromIntegral e * f p % unPrime p) $ factorise n)
 
 -- See LICENSE.OEIS
 -- https://oeis.org/
@@ -940,3 +946,45 @@ a196834 = Sequence $ nTimes 4 binomialTransform $ drop 1 bellNumbers
 -- |A000925: Number of ordered partitions of n into 2 squares
 a000925 :: Sequence
 a000925 = Sequence $ ofIndices $ \n -> genericLength $ filter isSquare [n - k * k | k <- [0..intSquareRoot n]]
+-- |A003415: Arithmetic derivative
+a003415 :: Sequence
+a003415 = Sequence $ ofIndices $ makeArithmeticDerivative $ const 1
+-- |A068720: Arithmetic derivative of the squares
+a068720 :: Sequence
+a068720 = Sequence $ zipWith (\n n' -> 2 * n * n') [1..] $ ofPositive $ makeArithmeticDerivative $ const 1
+-- |A068719: Arithmetic derivative of the even numbers
+a068719 :: Sequence
+a068719 = Sequence $ zipWith (\n n' -> n + 2 * n') [1..] $ ofPositive $ makeArithmeticDerivative $ const 1
+-- |A068721: Arithmetic derivative of the cubes
+a068721 :: Sequence
+a068721 = Sequence $ zipWith (\n n' -> 3 * n * n * n') [1..] $ ofPositive $ makeArithmeticDerivative $ const 1
+-- |A068346: Second arithmetic derivative
+a068346 :: Sequence
+a068346 = Sequence $ ofIndices $ nTimes 2 $ makeArithmeticDerivative $ const 1
+-- |A099306: Third arithmetic derivative
+a099306 :: Sequence
+a099306 = Sequence $ ofIndices $ nTimes 3 $ makeArithmeticDerivative $ const 1
+-- |A258644: Fourth arithmetic derivative
+a258644 :: Sequence
+a258644 = Sequence $ ofIndices $ nTimes 4 $ makeArithmeticDerivative $ const 1
+-- |A258645: Fifth arithmetic derivative
+a258645 :: Sequence
+a258645 = Sequence $ ofIndices $ nTimes 5 $ makeArithmeticDerivative $ const 1
+-- |A258646: Sixth arithmetic derivative
+a258646 :: Sequence
+a258646 = Sequence $ ofIndices $ nTimes 6 $ makeArithmeticDerivative $ const 1
+-- |A258647: Seventh arithmetic derivative
+a258647 :: Sequence
+a258647 = Sequence $ ofIndices $ nTimes 7 $ makeArithmeticDerivative $ const 1
+-- |A258648: Eighth arithmetic derivative
+a258648 :: Sequence
+a258648 = Sequence $ ofIndices $ nTimes 8 $ makeArithmeticDerivative $ const 1
+-- |A258649: Ninth arithmetic derivative
+a258649 :: Sequence
+a258649 = Sequence $ ofIndices $ nTimes 9 $ makeArithmeticDerivative $ const 1
+-- |A258650: Tenth arithmetic derivative
+a258650 :: Sequence
+a258650 = Sequence $ ofIndices $ nTimes 10 $ makeArithmeticDerivative $ const 1
+-- |A258851: Pi-based arithmetic derivative
+a258851 :: Sequence
+a258851 = Sequence $ ofIndices $ makeArithmeticDerivative $ primeCount . unPrime
