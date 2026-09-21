@@ -11,7 +11,9 @@ module Lang0315.Sequence
 , seqKeep
 , seqCut
 , seqJoin
+, seqInterleave
 , seqCharacter
+, seqUnique
 , byAntiDiagonals
 ) where
 
@@ -20,6 +22,8 @@ import Data.Bifunctor (bimap)
 import Data.List (genericIndex, genericReplicate, genericLength)
 import Data.Maybe (isNothing, isJust, catMaybes)
 import Data.Universe.Helpers (diagonals)
+import Data.List.NonEmpty (group)
+import qualified Data.List.NonEmpty as NE
 
 newtype Sequence = Sequence { unSequence :: [Integer] }
 
@@ -72,6 +76,9 @@ seqUnSquare (Sequence is) (Sequence js) = Sequence $ catMaybes $ byAntiDiagonals
 seqCharacter :: Sequence -> Sequence
 seqCharacter (Sequence xs) = Sequence $ flip map [0..] $ \n -> genericLength $ takeWhile (== n) $ dropWhile (< n) xs
 
+seqUnique :: Sequence -> Sequence
+seqUnique (Sequence xs) = Sequence $ NE.head <$> group xs
+
 seqKeep :: Sequence -> Sequence -> Sequence
 seqKeep (Sequence xs) (Sequence cs) = Sequence $ concat $ zipWith genericReplicate cs xs
 
@@ -80,3 +87,9 @@ seqCut (Sequence xs) = Sequence $ takeWhile (/= 0) xs
 
 seqJoin :: Sequence -> Sequence -> Sequence
 seqJoin (Sequence xs) (Sequence ys) = Sequence $ xs ++ ys
+
+seqInterleave :: Sequence -> Sequence -> Sequence
+seqInterleave (Sequence xs') (Sequence ys') = Sequence $ go xs' ys' where
+  go xa@(x:xs) ya@(y:ys) = if x <= y then x : go xs ya else y : go xa ys
+  go xs [] = xs
+  go _ ys = ys

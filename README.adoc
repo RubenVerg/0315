@@ -27,12 +27,14 @@ You can operate on sequences with operators, which have the following precedence
 |left-infix `+%+`|Modulo
 .2+|5|left-infix `+++`|Add
 |left-infix `+-+`|Subtract
-|6|right-infix `+~+`|Join
+.2+|6|right-infix `+~+`|Join
+|right-infix `+#+`|Interleave
 |7|infix `+<+`|Less Than
 |8|infix `+=+`|Equal To
 .2+|9|infix `+,+`|Untriangle
 |infix `+;+`|Unsquare
-|10 (loosest)|prefix `+_+`|Cut
+.2+|10 (loosest)|prefix `+_+`|Cut
+|prefix `+*+`|Unique
 |===
 
 The arithmetic operations apply componentwise, mapping if unary and zipping if binary.
@@ -49,7 +51,11 @@ Similarly, Unsquare deals with square sequences such as https://oeis.org/A003056
 
 Join concatenates two sequences tail to tip. It has no effect with an infinite left operand.
 
+Interleave meshes two weakly increasing sequences in such a way that the result is also weakly increasing.
+
 Cut takes the longest prefix of a sequence that doesn't contain a zero.
+
+Unique considers each group of consecutive equal values of a sequence, and gives each value just once.
 
 All infix operations, as well as `+[]+` and `+{}+`, evaluate the right hand side first, and the left hand side second. This is important if you use inline assignments.
 
@@ -60,6 +66,7 @@ You can also use transforms on sequences. The following transforms are supported
 |`+Ei+`|Inverse Euler transform|image:Ei.svg[Formula for inverse Euler transform]
 |`+B+`|Binomial transform|image:B.svg[Formula for binomial transform]
 |`+Bi+`|Inverse binomial transform|image:Bi.svg[Formula for inverse binomial transform]
+|`+WO+`|Weighout transform|image:WO.svg[Formula for weighout transform]
 |===
 
 Transforms are written by first using the function ID and then any expression. They apply before operators, so `+E a + b+` is `+(E a) + b+`, not `+E (a + b)+`

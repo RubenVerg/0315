@@ -27,6 +27,7 @@ functions =
   , unary "Bi" $ pure . Sequence . inverseBinomialTransform . unSequence
   , unary "E" $ pure . Sequence . eulerTransform . unSequence
   , unary "Ei" $ pure . Sequence . inverseEulerTransform . unSequence
+  , unary "WO" $ pure . Sequence . weighoutTransform . unSequence
   ]
 
 interpret :: Expr -> Context Sequence
@@ -48,8 +49,10 @@ interpret (ExprSemi l r) = do r' <- interpret r; l' <- interpret l; pure $ seqUn
 interpret (ExprIndex l r) = do r' <- interpret r; l' <- interpret l; pure $ l' `seqIndex` r'
 interpret (ExprKeep l r) = do r' <- interpret r; l' <- interpret l; pure $ l' `seqKeep` r'
 interpret (ExprCharacter r) = do r' <- interpret r; pure $ seqCharacter r'
+interpret (ExprUnique r) = do r' <- interpret r; pure $ seqUnique r'
 interpret (ExprCut r) = do r' <- interpret r; pure $ seqCut r'
 interpret (ExprJoin l r) = do r' <- interpret r; l' <- interpret l; pure $ l' `seqJoin` r'
+interpret (ExprInterleave l r) = do r' <- interpret r; l' <- interpret l; pure $ l' `seqInterleave` r'
 interpret (ExprName n) = do
   variables <- get
   case lookup n variables of

@@ -98,6 +98,9 @@ digitSequence = showCReal maximumAmountOfDigits >=> (\case
 realPhi :: CReal
 realPhi = (1 + sqrt 5) / 2
 
+happyProduct :: Num a => [PowerSeries a] -> [a]
+happyProduct = zipWith (\i p -> coefficients' p IL.!! i) [0..] . scanl (*) 1
+
 eulerTransform'G :: Fractional a => [a] -> [a]
 eulerTransform'G as = bs where
   cs = map (sum . map (\d -> fromInteger d * as `genericIndex` (d - 1)) . AF.divisorsList) [1..]
@@ -126,6 +129,9 @@ binomialTransform as = zipWith (sum .: zipWith (*)) (IL.toList Rec.binomial) (dr
 
 inverseBinomialTransform :: [Integer] -> [Integer]
 inverseBinomialTransform as = zipWith3 (\n -> sum .: zipWith3 (\k bn a -> (-1) ^ (n - k) * bn * a) [0..]) [0::Integer ..] (IL.toList Rec.binomial) (drop 1 $ inits as)
+
+weighoutTransform :: [Integer] -> [Integer]
+weighoutTransform as = fmap unDivisiblePromise $ happyProduct $ zipWith (\i a -> (1 + X^i)^^a) [1::Integer ..] as
 
 nTimes :: Int -> (a -> a) -> a -> a
 nTimes 0 _ = id
